@@ -6,8 +6,10 @@ public:
 
 	bool init();
 	void run();
+	void parseLevel();
 
 	int test = 5;
+
 private:
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;

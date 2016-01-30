@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "engine.h"
+#include "tmxparser.h"
 
 using namespace std;
 
@@ -94,4 +95,11 @@ void Engine::run() {
 		}
 	}
 
+	
+
+}
+
+void Engine::parseLevel() {
+	tmxparser::TmxMap map;
+	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &map, "./res");
 }
