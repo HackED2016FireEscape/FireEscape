@@ -22,6 +22,10 @@ int main(int argc, char* argv[]) {
 
 	std::cout << "e2: " << e2.test << std::endl;
 
+	if (e.init()) {
+		e.run();
+	}
+
 	// Keep this until we have a gameloop running
 	SDL_Delay(1000);
 
