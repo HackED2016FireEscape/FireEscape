@@ -18,6 +18,9 @@
     </Filter>
     <Filter Include="Source Files\map parsing">
       <UniqueIdentifier>{94ce3449-509c-4434-a5cd-1d22c7f597ca}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{71d67b2a-da73-4574-a05e-8ef97f5cf6eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +32,7 @@
     </ClCompile>
     <ClCompile Include="main_menu_state.cpp">
       <Filter>Source Files\core</Filter>
+	</ClCompile>
     <ClCompile Include="base64.cpp">
       <Filter>Source Files\map parsing</Filter>
     </ClCompile>
@@ -37,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
       <Filter>Source Files\map parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="placement_state.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="simulation_state.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +64,7 @@
     </ClInclude>
     <ClInclude Include="main_menu_state.h">
       <Filter>Source Files\core</Filter>
+	</ClInclude>
     <ClInclude Include="base64.h">
       <Filter>Source Files\map parsing</Filter>
     </ClInclude>
@@ -62,6 +73,21 @@
     </ClInclude>
     <ClInclude Include="tinyxml2.h">
       <Filter>Source Files\map parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="placement_state.h">
+      <Filter>Source Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="simulation_state.h">
+      <Filter>Source Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="two_d_array.h">
+      <Filter>Source Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="tile.h">
+      <Filter>Source Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="coord.h">
+      <Filter>Source Files\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
