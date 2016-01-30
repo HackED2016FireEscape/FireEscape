@@ -6,25 +6,25 @@ public:
 	~TwoDArray() {
 		delete[] data;
 	}
-	void init(unsigned newX, unsigned newY) {
+	void init(int newX, int newY) {
 		x = newX;
 		y = newY;
 		delete[] data;
 		data = new T[x*y];
 	}
 	void fill(T value) {
-		for (unsigned i = 0; i < x; ++i) {
-			for (unsigned j = 0; j < y; ++j) {
+		for (int i = 0; i < x; ++i) {
+			for (int j = 0; j < y; ++j) {
 				this->operator[](i)[j] = value;
 			}
 		}
 	}
-	T* operator[](unsigned index) {
+	T* operator[](int index) {
 		return data + index * y;
 	}
 
-	unsigned x;
-	unsigned y;
+	int x;
+	int y;
 
 private:
 	T* data;

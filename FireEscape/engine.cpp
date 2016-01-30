@@ -32,7 +32,7 @@ void Engine::setState(StateId state) {
 }
 
 void Engine::testInit() {
-	mapData.init(10, 10);
+	mapData.init(30, 10);
 	mapData.fill({ false });
 	mapData[0][0] = { true };
 	mapData[1][1] = { true };
@@ -83,7 +83,7 @@ void Engine::run() {
 	steady_clock::time_point prevStart = steady_clock::now();
 
 	double t = 0.0;
-	double dt = 0.1;
+	double dt = 0.01;
 
 	double accumulator = 0.0;
 
@@ -100,18 +100,13 @@ void Engine::run() {
 		double ratio = (double) steady_clock::period::num / (double) steady_clock::period::den;
 		double frameDuration = double(chronoFrameTime.count()) * ratio;
 
-		cout << "frameDuration: " << frameDuration << endl;
-
 		accumulator += frameDuration;
 
 		while (accumulator >= dt) {
-			cout << "Update!" << endl;
 			// Update goes here
 			while (SDL_PollEvent(&e) != 0) {
-				cout << "Event!" << endl;
 				events.push_back(e);
 				if (e.type == SDL_QUIT) {
-					cout << "Quit! ===================" << endl;
 					quit = true;
 				}
 				if (e.type == SDL_KEYDOWN) {
@@ -127,17 +122,14 @@ void Engine::run() {
 				}
 			}
 			states[activeState]->update(events);
+			events.clear();
 			// Also probably need to get input from Joystick and buttons here
 
-			// Delay here so that we don't loop stupidly fast doing nothing
-			SDL_Delay(10);
 
 			t += dt;
 			accumulator -= dt;
 		}
 
-		SDL_Delay(10);
-		cout << "Render!" << endl;
 		double alpha = accumulator / dt;
 
 		// Some interpolation (using alpha) can happen here before we render
@@ -147,10 +139,6 @@ void Engine::run() {
 		SDL_RenderClear(renderer);
 		states[activeState]->render(renderer);
 		SDL_RenderPresent(renderer);
-
-		if (quit) {
-			cout << "=======  Should be quitting! ===============" << endl;
-		}
 	}
 
 }

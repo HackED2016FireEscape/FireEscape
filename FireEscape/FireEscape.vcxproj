@@ -130,6 +130,7 @@
     <None Include="zlib1.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="coord.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="game_state.h" />
     <ClInclude Include="main_menu_state.h" />
