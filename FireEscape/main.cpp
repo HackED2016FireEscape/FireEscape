@@ -13,8 +13,6 @@ using namespace std;
 
 
 int main(int argc, char* argv[]) {
-	SDL_Window* window;
-
 	Engine& e = Engine::getInstance();
 	Engine& e2 = Engine::getInstance();
 
@@ -25,9 +23,6 @@ int main(int argc, char* argv[]) {
 	if (e.init()) {
 		e.run();
 	}
-
-	// Keep this until we have a gameloop running
-	SDL_Delay(1000);
 
 	return 0;
 }

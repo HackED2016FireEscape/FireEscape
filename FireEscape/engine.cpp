@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "engine.h"
+#include "main_menu_state.h"
 
 using namespace std;
 
@@ -16,6 +17,12 @@ Engine& Engine::getInstance() {
 
 Engine::Engine() {
 
+}
+
+Engine::~Engine() {
+	for (auto pair : states) {
+		delete pair.second;
+	}
 }
 
 bool Engine::init() {
@@ -32,6 +39,11 @@ bool Engine::init() {
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
 		return false;
 	}
+
+	states[StateId::MAIN_MENU] = new MainMenuState{};
+	activeState = StateId::MAIN_MENU;
+
+
 	return true;
 }
 
@@ -49,6 +61,7 @@ void Engine::run() {
 
 	bool quit = false;
 	SDL_Event e;
+	vector<SDL_Event> events;
 	while (!quit) {
 		start = steady_clock::now();
 
@@ -68,11 +81,13 @@ void Engine::run() {
 			// Update goes here
 			while (SDL_PollEvent(&e) != 0) {
 				cout << "Event!" << endl;
+				events.push_back(e);
 				if (e.type == SDL_QUIT) {
 					cout << "Quit! ===================" << endl;
 					quit = true;
 				}
 			}
+			states[activeState]->update(events);
 			// Also probably need to get input from Joystick and buttons here
 
 			// Delay here so that we don't loop stupidly fast doing nothing
@@ -89,6 +104,11 @@ void Engine::run() {
 		// Some interpolation (using alpha) can happen here before we render
 
 		// Render goes here
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_RenderClear(renderer);
+		states[activeState]->render(renderer);
+		SDL_RenderPresent(renderer);
+
 		if (quit) {
 			cout << "=======  Should be quitting! ===============" << endl;
 		}
