@@ -2,6 +2,8 @@
 
 #include <map>
 #include "game_state.h"
+#include "two_d_array.h"
+#include "tile.h"
 
 
 using namespace std;
@@ -21,6 +23,10 @@ public:
 	void run();
 
 	void setState(StateId state);
+
+	void testInit();
+
+	TwoDArray<Tile>& getMap();
 private:
 
 	const int SCREEN_WIDTH = 640;
@@ -31,6 +37,8 @@ private:
 
 	StateId activeState;
 	map<StateId, GameState*> states;
+
+	TwoDArray<Tile> mapData;
 	
 	Engine();
 	~Engine();

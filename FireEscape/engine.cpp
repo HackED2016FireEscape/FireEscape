@@ -31,6 +31,25 @@ void Engine::setState(StateId state) {
 	activeState = state;
 }
 
+void Engine::testInit() {
+	mapData.init(10, 10);
+	mapData.fill({ false });
+	mapData[0][0] = { true };
+	mapData[1][1] = { true };
+	mapData[2][2] = { true };
+	mapData[3][3] = { true };
+	mapData[4][4] = { true };
+	mapData[5][5] = { true };
+	mapData[6][6] = { true };
+	mapData[7][7] = { true };
+	mapData[8][8] = { true };
+	mapData[9][9] = { true };
+}
+
+TwoDArray<Tile>& Engine::getMap() {
+	return mapData;
+}
+
 bool Engine::init() {
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
@@ -50,6 +69,8 @@ bool Engine::init() {
 	states[StateId::PLACEMENT] = new PlacementState{};
 	states[StateId::SIMULATION] = new SimulationState{};
 	activeState = StateId::MAIN_MENU;
+
+	testInit();
 
 	return true;
 }

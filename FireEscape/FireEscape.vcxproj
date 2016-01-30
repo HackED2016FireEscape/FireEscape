@@ -135,6 +135,8 @@
     <ClInclude Include="main_menu_state.h" />
     <ClInclude Include="placement_state.h" />
     <ClInclude Include="simulation_state.h" />
+    <ClInclude Include="tile.h" />
+    <ClInclude Include="two_d_array.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
