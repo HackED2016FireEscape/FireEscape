@@ -117,9 +117,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="base64.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_menu_state.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="tmxparser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libpng16-16.dll" />
@@ -128,9 +131,12 @@
     <None Include="zlib1.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="base64.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="game_state.h" />
     <ClInclude Include="main_menu_state.h" />
+    <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="tmxparser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

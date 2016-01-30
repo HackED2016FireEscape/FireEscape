@@ -16,6 +16,9 @@
     <Filter Include="Source Files\core">
       <UniqueIdentifier>{f5c345cc-fa34-40e5-9500-5f3d68988196}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\map parsing">
+      <UniqueIdentifier>{94ce3449-509c-4434-a5cd-1d22c7f597ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,6 +29,14 @@
     </ClCompile>
     <ClCompile Include="main_menu_state.cpp">
       <Filter>Source Files\core</Filter>
+    <ClCompile Include="base64.cpp">
+      <Filter>Source Files\map parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="tmxparser.cpp">
+      <Filter>Source Files\map parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>Source Files\map parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +54,14 @@
     </ClInclude>
     <ClInclude Include="main_menu_state.h">
       <Filter>Source Files\core</Filter>
+    <ClInclude Include="base64.h">
+      <Filter>Source Files\map parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="tmxparser.h">
+      <Filter>Source Files\map parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>Source Files\map parsing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
