@@ -8,19 +8,20 @@ using namespace std;
 
 class Engine {
 public:
-	static Engine& getInstance();
-
-	bool init();
-	void run();
-
-	int test = 5;
-private:
 	enum class StateId
 	{
 		MAIN_MENU,
 		PLACEMENT,
 		SIMULATION
 	};
+
+	static Engine& getInstance();
+
+	bool init();
+	void run();
+
+	void setState(StateId state);
+private:
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
@@ -31,7 +32,6 @@ private:
 	StateId activeState;
 	map<StateId, GameState*> states;
 	
-
 	Engine();
 	~Engine();
 };

@@ -27,6 +27,12 @@
     <ClCompile Include="main_menu_state.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="placement_state.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="simulation_state.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="libpng16-16.dll" />
@@ -42,6 +48,12 @@
       <Filter>Source Files\core</Filter>
     </ClInclude>
     <ClInclude Include="main_menu_state.h">
+      <Filter>Source Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="placement_state.h">
+      <Filter>Source Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="simulation_state.h">
       <Filter>Source Files\core</Filter>
     </ClInclude>
   </ItemGroup>

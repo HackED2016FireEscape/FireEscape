@@ -6,6 +6,8 @@
 
 #include "engine.h"
 #include "main_menu_state.h"
+#include "placement_state.h"
+#include "simulation_state.h"
 
 using namespace std;
 
@@ -25,6 +27,10 @@ Engine::~Engine() {
 	}
 }
 
+void Engine::setState(StateId state) {
+	activeState = state;
+}
+
 bool Engine::init() {
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
@@ -41,8 +47,9 @@ bool Engine::init() {
 	}
 
 	states[StateId::MAIN_MENU] = new MainMenuState{};
+	states[StateId::PLACEMENT] = new PlacementState{};
+	states[StateId::SIMULATION] = new SimulationState{};
 	activeState = StateId::MAIN_MENU;
-
 
 	return true;
 }
@@ -85,6 +92,17 @@ void Engine::run() {
 				if (e.type == SDL_QUIT) {
 					cout << "Quit! ===================" << endl;
 					quit = true;
+				}
+				if (e.type == SDL_KEYDOWN) {
+					if (e.key.keysym.sym == SDLK_m) {
+						setState(StateId::MAIN_MENU);
+					}
+					else if (e.key.keysym.sym == SDLK_p) {
+						setState(StateId::PLACEMENT);
+					}
+					else if (e.key.keysym.sym == SDLK_s) {
+						setState(StateId::SIMULATION);
+					}
 				}
 			}
 			states[activeState]->update(events);

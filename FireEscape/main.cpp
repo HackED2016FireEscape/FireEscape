@@ -14,11 +14,6 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 	Engine& e = Engine::getInstance();
-	Engine& e2 = Engine::getInstance();
-
-	e.test = 10;
-
-	std::cout << "e2: " << e2.test << std::endl;
 
 	if (e.init()) {
 		e.run();

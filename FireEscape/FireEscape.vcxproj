@@ -120,6 +120,8 @@
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_menu_state.cpp" />
+    <ClCompile Include="placement_state.cpp" />
+    <ClCompile Include="simulation_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libpng16-16.dll" />
@@ -131,6 +133,8 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="game_state.h" />
     <ClInclude Include="main_menu_state.h" />
+    <ClInclude Include="placement_state.h" />
+    <ClInclude Include="simulation_state.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
