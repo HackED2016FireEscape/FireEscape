@@ -44,6 +44,7 @@ bool Engine::init() {
 	states[StateId::MAIN_MENU] = new MainMenuState{};
 	activeState = StateId::MAIN_MENU;
 
+	parseLevel();
 
 	return true;
 }
@@ -121,5 +122,5 @@ void Engine::run() {
 
 void Engine::parseLevel() {
 	tmxparser::TmxMap map;
-	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &map, "./res");
+	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &map, "./res/");
 }

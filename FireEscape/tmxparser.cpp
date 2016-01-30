@@ -366,9 +366,11 @@ TmxReturn _parseTilesetNode(tinyxml2::XMLElement* element, TmxTileset* outTilese
 		CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "tileheight", &outTileset->tileHeight);
 		outTileset->tileSpacingInImage = element->UnsignedAttribute("spacing");
 		outTileset->tileMarginInImage = element->UnsignedAttribute("margin");
+		outTileset->offset.x = 0;
+		outTileset->offset.y = 0;
 
 		// TODO - read TODO at end of this function
-		if (element->FirstChildElement("image") == NULL)
+		/*if (element->FirstChildElement("image") == NULL)
 		{
 			LOGE("We do not support maps with tilesets that have no image associated currently...");
 			return kErrorParsing;
@@ -388,8 +390,8 @@ TmxReturn _parseTilesetNode(tinyxml2::XMLElement* element, TmxTileset* outTilese
 		if (element->FirstChildElement("tileoffset") != NULL)
 		{
 			error = _parseOffsetNode(element->FirstChildElement("tileoffset"), &outTileset->offset);
-		}
-
+		}*/
+		TmxReturn error;
 		for (tinyxml2::XMLElement* child = element->FirstChildElement("tile"); child != NULL; child = child->NextSiblingElement("tile"))
 		{
 			TmxTileDefinition tileDef;
@@ -408,8 +410,8 @@ TmxReturn _parseTilesetNode(tinyxml2::XMLElement* element, TmxTileset* outTilese
 
 		// derive row/col count, calculate tile indices
 		// TODO - this is why we do not accept tilesets without image tag atm
-		outTileset->colCount = (outTileset->image.width - outTileset->tileMarginInImage) / (outTileset->tileWidth + outTileset->tileSpacingInImage);
-		outTileset->rowCount = (outTileset->image.height - outTileset->tileMarginInImage) / (outTileset->tileHeight + outTileset->tileSpacingInImage);
+		//outTileset->colCount = (outTileset->image.width - outTileset->tileMarginInImage) / (outTileset->tileWidth + outTileset->tileSpacingInImage);
+		//outTileset->rowCount = (outTileset->image.height - outTileset->tileMarginInImage) / (outTileset->tileHeight + outTileset->tileSpacingInImage);
 	}
 
 	return TmxReturn::kSuccess;
@@ -421,13 +423,20 @@ TmxReturn _parseTileDefinitionNode(tinyxml2::XMLElement* element, TmxTileDefinit
 	TmxReturn error = TmxReturn::kSuccess;
 
 	outTileDefinition->id = element->UnsignedAttribute("id");
+
 	error = _parsePropertyNode(element->FirstChildElement("properties"), &outTileDefinition->propertyMap);
 	if (error)
 	{
 		return error;
 	}
 
-	if (element->FirstChildElement("animation") != NULL)
+	error = _parseImageNode(element->FirstChildElement("image"), &outTileDefinition->image);
+	if (error)
+	{
+		return error;
+	}
+
+	/*if (element->FirstChildElement("animation") != NULL)
 	{
 		error = _parseTileAnimationNode(element->FirstChildElement("animation"), &outTileDefinition->animations);
 	}
@@ -443,7 +452,7 @@ TmxReturn _parseTileDefinitionNode(tinyxml2::XMLElement* element, TmxTileDefinit
 		}
 
 		outTileDefinition->objectgroups.push_back(group);
-	}
+	}*/
 
 	return error;
 }

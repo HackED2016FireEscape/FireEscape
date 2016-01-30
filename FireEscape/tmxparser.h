@@ -154,13 +154,23 @@ typedef struct
 
 typedef std::vector<TmxObjectGroup> TmxObjectGroupCollection_t;
 
+typedef struct
+{
+	std::string format;
+	std::string source;
+	std::string transparentColor;
+	unsigned int width;
+	unsigned int height;
+} TmxImage;
+
 
 typedef struct
 {
 	TileId_t id;
 	TmxPropertyMap_t propertyMap;
-	TmxAnimationFrameCollection_t animations;
-	TmxObjectGroupCollection_t objectgroups;
+	//TmxAnimationFrameCollection_t animations;
+	//TmxObjectGroupCollection_t objectgroups;
+	TmxImage image;
 } TmxTileDefinition;
 
 
@@ -173,15 +183,6 @@ typedef struct
 	int y;
 } TmxOffset;
 
-
-typedef struct
-{
-	std::string format;
-	std::string source;
-	std::string transparentColor;
-	unsigned int width;
-	unsigned int height;
-} TmxImage;
 
 
 typedef struct
