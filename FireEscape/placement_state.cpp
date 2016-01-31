@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <mutex>
 
 #include "placement_state.h"
 #include "engine.h"
@@ -18,6 +19,75 @@ void PlacementState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
 	TwoDArray<Tile>& mapData = e.getItems();
 
+	if (!e.getActions().empty()) {
+		if (e.actionMutex.try_lock()) {   // only increase if currently not locked.
+			queue<char> actions = e.getActions();
+
+
+
+			for (int i = 0; i < actions.size(); i++) {
+				char action = actions.front();
+				actions.pop();
+
+				switch (action) {
+				case 'S':
+					e.setState(Engine::StateId::SIMULATION);
+					break;
+
+				case 'A':
+					menuOpen = !menuOpen;
+					break;
+
+				case 'B':
+					selected = -1;
+					break;
+
+				case 'U':
+					cursorPos.y -= 1;
+					break;
+
+				case 'D':
+					cursorPos.y += 1;
+					break;
+
+				case 'L':
+					cursorPos.x -= 1;
+					break;
+
+				case 'R':
+					cursorPos.x += 1;
+					break;
+
+				case '7':
+					// up-right
+					cursorPos.y -= 1;
+					cursorPos.x += 1;
+					break;
+
+				case '6':
+					// Up-left
+					cursorPos.y -= 1;
+					cursorPos.x -= 1;
+					break;
+
+				case '8':
+					// Down-left
+					cursorPos.y += 1;
+					cursorPos.x -= 1;
+					break;
+
+				case '9':
+					// Down-right
+					cursorPos.y += 1;
+					cursorPos.x += 1;
+					break;
+				}
+
+			}
+
+			e.actionMutex.unlock();
+		}
+	}
 
 	if (!menuOpen) {
 		for (auto e : input) {

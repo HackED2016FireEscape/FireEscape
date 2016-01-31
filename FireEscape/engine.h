@@ -1,15 +1,21 @@
 #pragma once
 
 #include <map>
+#include <queue>
+#include <mutex>
+
 #include "game_state.h"
 #include "two_d_array.h"
 #include "tile.h"
 #include "tmxparser.h"
 #include "person.h"
 #include <SDL_mixer.h>
+#include "CommPort.h"
 
 
 using namespace std;
+
+extern CommPort* port;
 
 class Engine {
 public:
@@ -60,10 +66,15 @@ public:
 	vector<Person>& getPeople();
 
 	void processMap();
+	
+
+	queue<char>& getActions();
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
 
+	mutex actionMutex;
+	
 	Coord<int> scrollOffset = { 0, 0 };
 	int top;
 	int bottom;
@@ -75,6 +86,7 @@ public:
 	map<int, Mix_Chunk*> sounds;
 
 private:
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
@@ -87,7 +99,9 @@ private:
 	vector<TwoDArray<Tile>*> mapData;
 	tmxparser::TmxMap tiledMap;
 	vector<Person> people;
-	
+	queue<char> actions;
+	thread commThread;
+
 	Engine();
 	~Engine();
 };

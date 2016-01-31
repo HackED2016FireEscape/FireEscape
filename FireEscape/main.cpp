@@ -15,10 +15,12 @@
 
 using namespace std;
 
-
+CommPort* port;
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
 
+	port = new CommPort();
+	port->init();
 
 	Engine& e = Engine::getInstance();
 
