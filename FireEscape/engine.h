@@ -18,8 +18,8 @@ extern CommPort* port;
 
 class Engine {
 public:
-	const int TILE_WIDTH = 16;
-	const int TILE_HEIGHT = 16;
+	const int TILE_WIDTH = 32;
+	const int TILE_HEIGHT = 32;
 
 	int itemLocation;
 
@@ -43,7 +43,8 @@ public:
 		FIRE1 = -5,
 		FIRE2 = -6,
 		FIRE3 = -7,
-		FIRE4 = -8
+		FIRE4 = -8,
+		FIRE_EXTINGUISHER = -9
 	};
 
 	void setState(StateId state);
@@ -65,9 +66,16 @@ public:
 	const int SCREEN_HEIGHT = 480;
 
 	mutex actionMutex;
+	
+	Coord<int> scrollOffset = { 0, 0 };
+	int top;
+	int bottom;
+	int left;
+	int right;
+	int peopleCount;
 
 private:
-	
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 

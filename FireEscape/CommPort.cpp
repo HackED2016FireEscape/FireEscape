@@ -16,6 +16,7 @@ HANDLE commPort = INVALID_HANDLE_VALUE;
 TCHAR* myComm = TEXT("COM5");
 DCB dcb;
 queue <char> myQueue;
+bool openCOM = false;
 
 CommPort::CommPort()
 {
@@ -28,20 +29,22 @@ CommPort::~CommPort() {
 
 void CommPort::update()
 {
-	Engine& e = Engine::getInstance();
+	if (openCOM) {
+		Engine& e = Engine::getInstance();
 
-	DWORD nRead;
-	int i = 0;
-	bool flag = true;
-	while (flag) {
-		char buff[1];
-		ReadFile(commPort, buff, 1, &nRead, NULL);
-		std::cout << buff[0];
-		if (buff[0] != '\0' && buff[0] != '\n' && buff[0] != '\r') {
-			e.actionMutex.lock();
-			e.getActions().push(buff[0]);
-			e.actionMutex.unlock();
-		}		
+		DWORD nRead;
+		int i = 0;
+		bool flag = true;
+		while (flag) {
+			char buff[1];
+			ReadFile(commPort, buff, 1, &nRead, NULL);
+			std::cout << buff[0];
+			if (buff[0] != '\0' && buff[0] != '\n' && buff[0] != '\r') {
+				e.actionMutex.lock();
+				e.getActions().push(buff[0]);
+				e.actionMutex.unlock();
+			}
+		}
 	}
 
 
@@ -69,12 +72,14 @@ bool CommPort::init()
 
 	if (commPort == INVALID_HANDLE_VALUE) {
 
-		printf("Error!!!!");
-		exit(1);
+		printf("No COM available.");
+		openCOM = false;
+		return false;
 
 	}
 	else {
 		printf("Successfully connected.\n\n");
+		openCOM = true;
 	}
 
 	dcb.DCBlength = sizeof(DCB);

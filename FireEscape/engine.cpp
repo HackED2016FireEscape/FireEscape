@@ -151,7 +151,7 @@ void portUpdate() {
 
 bool Engine::init() {
 	commThread = thread(portUpdate);
-	Sleep(10000);
+
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		return false;
@@ -175,10 +175,12 @@ bool Engine::init() {
 	textures[AssetId::LOGO] = IMG_LoadTexture(renderer, "res/logo.png");
 	textures[AssetId::PRESS_START] = IMG_LoadTexture(renderer, "res/press_start.png");
 	textures[AssetId::MAIN_MENU_BACKGROUND] = IMG_LoadTexture(renderer, "res/title_file.png");
-	textures[AssetId::FIRE1] = IMG_LoadTexture(renderer, "res/fire0.png.png");
-	textures[AssetId::FIRE2] = IMG_LoadTexture(renderer, "res/fire1.png.png");
-	textures[AssetId::FIRE3] = IMG_LoadTexture(renderer, "res/fire2.png.png");
-	textures[AssetId::FIRE4] = IMG_LoadTexture(renderer, "res/fire3.png.png");
+	textures[AssetId::FIRE1] = IMG_LoadTexture(renderer, "res/fire0.png");
+	textures[AssetId::FIRE2] = IMG_LoadTexture(renderer, "res/fire1.png");
+	textures[AssetId::FIRE3] = IMG_LoadTexture(renderer, "res/fire2.png");
+	textures[AssetId::FIRE4] = IMG_LoadTexture(renderer, "res/fire3.png");
+	textures[AssetId::FIRE_EXTINGUISHER] = IMG_LoadTexture(renderer, "res/fire extinguisher.png");
+
 	loadLevel("./res/map2.tmx");
 
 	return true;
@@ -298,7 +300,7 @@ void Engine::loadLevel(std::string mapFile) {
 				}
 			}
 		}
-		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, (int)it.second.id, isExit };
+		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, false, false, (int)it.second.id, isExit };
 
 	}
 
@@ -329,11 +331,38 @@ void Engine::loadLevel(std::string mapFile) {
 		
 		mapData.push_back(data);
 	}
+	for (auto prop : tiledMap.propertyMap) {
+		if (prop.first.compare("top") == 0) {
+			top = stoi(prop.second);
+		}
+		if (prop.first.compare("bottom") == 0) {
+			bottom = stoi(prop.second);
+		}
+		if (prop.first.compare("right") == 0) {
+			right = stoi(prop.second);
+		}
+		if (prop.first.compare("left") == 0) {
+			left = stoi(prop.second);
+		}
+		if (prop.first.compare("peopleCount") == 0) {
+			peopleCount = stoi(prop.second);
+		}
+	}
 
 	people.clear();
-	people.push_back({ { 2, 12 } });
-	people.push_back({ { 3, 6 } });
-	people.push_back({ { 8, 1 } });
+	while (people.size() < peopleCount) {
+		Coord<int> pos = {
+			((rand() >> 8) % (right - left)) + left,
+			((rand() >> 8) % (bottom - top)) + top,
+		};
+		while (tileOccupied(pos)) {
+			pos = {
+				((rand() >> 8) % (right - left)) + left,
+				((rand() >> 8) % (bottom - top)) + top
+			};
+		}
+		people.push_back({pos});
+	}
 }
 
 SDL_Texture* Engine::getTexture(int key) {
