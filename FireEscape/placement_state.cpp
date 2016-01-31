@@ -151,12 +151,12 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		//SDL_RenderFillRect(renderer, &menu_back);
 
 		// menu title
-		menu_top.x = x; 
+		/*menu_top.x = x; 
 		menu_top.y = y; 
 		menu_top.h = h / 10; 
 		menu_top.w = w; 
 		SDL_SetRenderDrawColor(renderer, 148, 1, 9, 0x0A);
-		SDL_RenderFillRect(renderer, &menu_top);
+		SDL_RenderFillRect(renderer, &menu_top);*/
 		
 		// menu items
 		menu_list[0].x = x; 
