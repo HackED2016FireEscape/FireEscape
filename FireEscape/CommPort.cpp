@@ -13,7 +13,7 @@ using std::queue;
 using namespace std;
 
 HANDLE commPort = INVALID_HANDLE_VALUE;
-TCHAR* myComm = TEXT("COM5");
+TCHAR* myComm = TEXT("COM6");
 DCB dcb;
 queue <char> myQueue;
 bool openCOM = false;
