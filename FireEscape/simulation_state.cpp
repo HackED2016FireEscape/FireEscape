@@ -82,6 +82,10 @@ void SimulationState::update(vector<SDL_Event> input) {
 					person.position += {1, 0};
 				}
 			}
+
+			if (mapData.fromCoord(person.position).onFire) {
+				person.alive = false;
+			}
 		}
 	}
 }
@@ -107,7 +111,12 @@ void SimulationState::render(SDL_Renderer* renderer) {
 	}
 
 	for (auto person : people) {
-		SDL_SetRenderDrawColor(renderer, 0xAA, 0x55, 0x55, 0xFF);
+		if (person.alive) {
+			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
+		}
+		else {
+			SDL_SetRenderDrawColor(renderer, 0x22, 0x22, 0x22, 0xFF);
+		}
 		r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
 		SDL_RenderFillRect(renderer, &r);
 	}

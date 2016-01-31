@@ -11,4 +11,5 @@ struct Person {
 
 	Coord<int> position;
 	Direction desiredMove;
+	bool alive;
 };

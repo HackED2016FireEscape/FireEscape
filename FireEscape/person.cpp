@@ -3,6 +3,10 @@
 
 
 void Person::decide() {
+	if (!alive) {
+		desiredMove = Direction::IDLE;
+		return;
+	}
 	TwoDArray<Tile>& map = Engine::getInstance().getMap();
 	TwoDArray<Tile>& mapData = Engine::getInstance().getMap();
 

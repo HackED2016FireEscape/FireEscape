@@ -49,11 +49,11 @@ void Engine::testInit() {
 	//mapData[9][9] = { true };
 
 	people.clear();
-	people.push_back({ { 2, 12 }, Person::Direction::RIGHT });
-	people.push_back({ { 3, 6 }, Person::Direction::RIGHT });
-	people.push_back({ { 8, 1 }, Person::Direction::RIGHT });
-	people.push_back({ { 22, 3 }, Person::Direction::RIGHT });
-	people.push_back({ { 4, 18 }, Person::Direction::RIGHT });
+	people.push_back({ { 2, 12 }, Person::Direction::IDLE, true });
+	people.push_back({ { 3, 6 }, Person::Direction::IDLE, true });
+	people.push_back({ { 8, 1 }, Person::Direction::IDLE, true });
+	people.push_back({ { 22, 3 }, Person::Direction::IDLE, true });
+	people.push_back({ { 4, 18 }, Person::Direction::IDLE, true });
 }
 
 TwoDArray<Tile>& Engine::getMap() {
