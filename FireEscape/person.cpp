@@ -22,6 +22,16 @@ void Person::decide() {
 
 	TwoDArray<Tile>& mapData = e.getItems();
 
+	vector<Coord<int>> goals;
+	for (int i = 0; i < mapData.x; ++i) {
+		for (int j = 0; j < mapData.y; ++j) {
+			Tile& t = mapData[i][j];
+			if (t.isExit || t.isFireExtinguisher) {
+				goals.push_back({ i, j });
+			}
+		}
+	}
+
 	vector<Direction> validChoices = {};
 	vector<Direction> preferredChoices = {};
 	if (state == State::CALM) {
