@@ -21,6 +21,12 @@ struct Coord {
 			y + other.y
 		};
 	}
+	Coord<T> operator-(const Coord<T>& other) {
+		return{
+			x - other.x,
+			y - other.y
+		};
+	}
 	bool operator<(const Coord<T>& other) {
 		return x < other.x;
 	}
