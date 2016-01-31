@@ -158,6 +158,18 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		}
 	}
 
+	for (auto person : people) {
+		if (person.alive) {
+			src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+			dest = { e.TILE_WIDTH * person.position.x - e.scrollOffset.x, e.TILE_HEIGHT * person.position.y - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+			SDL_RenderCopy(renderer, personTex, &src, &dest);
+		}
+		else {
+		}
+		//r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
+		//SDL_RenderFillRect(renderer, &r);
+	}
+
 	if (!menuOpen) {
 		SDL_SetRenderDrawColor(renderer, 0x66, 0x66, 0xFF, 0x66);
 		r = { e.TILE_WIDTH * cursorPos.x - e.scrollOffset.x, e.TILE_HEIGHT * cursorPos.y - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };

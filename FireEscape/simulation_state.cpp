@@ -60,6 +60,9 @@ void SimulationState::update(vector<SDL_Event> input) {
 	vector<Coord<int>> toBeLit;
 	if (updates > 60) {
 		updates = 0;
+		if (countdownEnabled) {
+			firefighterResponseTime -= 1;
+		}
 		for (int i = 0; i < mapData.x; ++i) {
 			for (int j = 0; j < mapData.y; ++j) {
 				Tile& t = mapData[i][j];
@@ -138,6 +141,10 @@ void SimulationState::update(vector<SDL_Event> input) {
 			}
 			if (mapData.fromCoord(person.position).onFire) {
 				person.alive = false;
+			}
+			if (mapData.fromCoord(person.position).isExit) {
+				person.escaped = true;
+				countdownEnabled = true;
 			}
 		}
 	}

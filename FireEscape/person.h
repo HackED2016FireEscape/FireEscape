@@ -20,5 +20,6 @@ struct Person {
 	Direction desiredMove;
 	State state = State::CALM;
 	bool alive;
+	bool escaped;
 	bool hasFireExtinguisher;
 };
