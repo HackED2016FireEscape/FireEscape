@@ -37,6 +37,19 @@ void SimulationState::update(vector<SDL_Event> input) {
 	if (state[SDL_SCANCODE_DOWN]) {
 		engine.scrollOffset.y += 3;
 	}
+	if (state[SDL_SCANCODE_Q]) {
+		reset();
+		Engine& e = Engine::getInstance();
+		Engine::getInstance().currentLevel++;
+		if (Engine::getInstance().currentLevel > 4) {
+			Engine::getInstance().setState(Engine::StateId::MAIN_MENU);
+			Engine::getInstance().currentLevel = 0;
+		}
+		else {
+			Engine::getInstance().loadLevel(Engine::getInstance().levels[e.currentLevel]);
+			Engine::getInstance().setState(Engine::StateId::PLACEMENT);
+		}
+	}
 
 	if (engine.scrollOffset.x < 0) {
 		engine.scrollOffset.x = 0;
@@ -128,9 +141,9 @@ void SimulationState::update(vector<SDL_Event> input) {
 							}
 						}
 					}
-					if (t.isFireSource) {
+					if (t.isFireSource || true) {
 						chance = (rand() >> 4) % 100;
-						if (chance > 75) {
+						if (chance > 98) {
 							t.onFire = true;
 							timerStarted = true;
 						}
