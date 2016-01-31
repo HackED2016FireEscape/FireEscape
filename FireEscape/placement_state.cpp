@@ -37,8 +37,14 @@ void PlacementState::update(vector<SDL_Event> input) {
 					cursorPos.y += 1;
 				}
 				else if (e.key.keysym.sym == SDLK_a) {
-					mapData[cursorPos.x][cursorPos.y].onFire =
-						!mapData[cursorPos.x][cursorPos.y].onFire;
+					if (selected == -1) {
+						mapData[cursorPos.x][cursorPos.y].onFire =
+							!mapData[cursorPos.x][cursorPos.y].onFire;
+					}
+					else if (selected == 0) {
+						mapData[cursorPos.x][cursorPos.y].isFireExtinguisher =
+							!mapData[cursorPos.x][cursorPos.y].isFireExtinguisher;
+					}
 				}
 				else if (e.key.keysym.sym == SDLK_b) {
 					selected = -1; 
@@ -123,6 +129,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 	vector<Person>& people = e.getPeople();
 	SDL_Texture* fireTex = e.getTexture(33);
 	SDL_Texture* personTex = e.getTexture(38);
+	SDL_Texture* extinguisherTex = e.getTexture(Engine::AssetId::FIRE_EXTINGUISHER);
 	//int w, h;
 	//SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
 
@@ -138,8 +145,10 @@ void PlacementState::render(SDL_Renderer* renderer) {
 				dest = { e.TILE_WIDTH * i - e.scrollOffset.x, e.TILE_HEIGHT * j - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 				SDL_RenderCopy(renderer, fireTex, &src, &dest);
 			}
-			else {
-				//SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
+			if (t.isFireExtinguisher) {
+				src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+				dest = { e.TILE_WIDTH * i - e.scrollOffset.x, e.TILE_HEIGHT * j - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+				SDL_RenderCopy(renderer, extinguisherTex, &src, &dest);
 			}
 
 			/*SDL_Rect r = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
@@ -174,7 +183,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		
 		// menu items
 		menu_list[0].x = x; 
-		menu_list[0].y = y + menu_top.h + 5;
+		menu_list[0].y = y + h / 10 + 5;
 		menu_list[0].h = (h-(h/10))/3;
 		menu_list[0].w = w;
 		SDL_SetRenderDrawColor(renderer, 160, 177, 187, 0x0A);
@@ -183,6 +192,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 			menu_list[num] = menu_list[num-1];
 			menu_list[num].y = menu_list[num].y + menu_list[num].h + 5;
 			SDL_RenderFillRect(renderer, &menu_list[num]);
+			cout << menu_list[num].x << ", " << menu_list[num].y << ", " << menu_list[num].w << ", " << menu_list[num].h << endl;
 		}
 
 		// menu hover

@@ -37,7 +37,8 @@ public:
 		FIRE1 = -5,
 		FIRE2 = -6,
 		FIRE3 = -7,
-		FIRE4 = -8
+		FIRE4 = -8,
+		FIRE_EXTINGUISHER = -9
 	};
 
 	void setState(StateId state);
@@ -58,8 +59,6 @@ public:
 	Coord<int> scrollOffset = { 0, 0 };
 
 private:
-
-
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 

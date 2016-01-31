@@ -11,4 +11,5 @@ public:
 
 private:
 	int updates = 0;
+	int firefighterResponseTime = 45;
 };

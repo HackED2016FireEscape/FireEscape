@@ -4,7 +4,8 @@
 Person::Person(Coord<int> p)
 :	position(p),
 	desiredMove(Direction::IDLE),
-	alive(true) {
+	alive(true),
+	hasFireExtinguisher(false) {
 
 	static unsigned nextId = 0;
 	id = ++nextId;

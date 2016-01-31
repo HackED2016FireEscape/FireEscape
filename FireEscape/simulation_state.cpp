@@ -129,6 +129,13 @@ void SimulationState::update(vector<SDL_Event> input) {
 				}
 			}
 
+			if (mapData.fromCoord(person.position).isFireExtinguisher) {
+				mapData.fromCoord(person.position).isFireExtinguisher = false;
+				person.hasFireExtinguisher = true;
+			}
+			if (person.hasFireExtinguisher) {
+				mapData.fromCoord(person.position).onFire = false;
+			}
 			if (mapData.fromCoord(person.position).onFire) {
 				person.alive = false;
 			}
@@ -171,6 +178,7 @@ void SimulationState::render(SDL_Renderer* renderer) {
 	vector<Person>& people = e.getPeople();
 	SDL_Texture* fireTex = e.getTexture(33);
 	SDL_Texture* personTex = e.getTexture(38);
+	SDL_Texture* extinguisherTex = e.getTexture(Engine::AssetId::FIRE_EXTINGUISHER);
 	int w, h;
 	SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
 
@@ -186,8 +194,10 @@ void SimulationState::render(SDL_Renderer* renderer) {
 				dest = { e.TILE_WIDTH * i - e.scrollOffset.x, e.TILE_HEIGHT * j - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 				SDL_RenderCopy(renderer, fireTex, &src, &dest);
 			}
-			else {
-				//SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
+			if (t.isFireExtinguisher) {
+				src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+				dest = { e.TILE_WIDTH * i - e.scrollOffset.x, e.TILE_HEIGHT * j - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+				SDL_RenderCopy(renderer, extinguisherTex, &src, &dest);
 			}
 
 			/*SDL_Rect r = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
