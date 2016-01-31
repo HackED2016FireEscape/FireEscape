@@ -20,10 +20,39 @@ SimulationState::SimulationState() {
 }
 
 void SimulationState::update(vector<SDL_Event> input) {
-	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getItems();
-	vector<Person>& people = e.getPeople();
+	Engine& engine = Engine::getInstance();
+	TwoDArray<Tile>& mapData = engine.getItems();
+	vector<Person>& people = engine.getPeople();
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+
+	if (state[SDL_SCANCODE_LEFT]) {
+		engine.scrollOffset.x -= 1;
+	}
+	else if (state[SDL_SCANCODE_RIGHT]) {
+		engine.scrollOffset.x += 1;
+	}
+	else if (state[SDL_SCANCODE_UP]) {
+		engine.scrollOffset.y -= 1;
+	}
+	else if (state[SDL_SCANCODE_DOWN]) {
+		engine.scrollOffset.y += 1;
+	}
+
 	for (auto e : input) {
+		if (e.type == SDL_KEYDOWN) {
+			/*if (e.key.keysym.sym == SDLK_LEFT) {
+				engine.scrollOffset.x -= 1;
+			}
+			else if (e.key.keysym.sym == SDLK_RIGHT) {
+				engine.scrollOffset.x += 1;
+			}
+			else if (e.key.keysym.sym == SDLK_UP) {
+				engine.scrollOffset.y -= 1;
+			}
+			else if (e.key.keysym.sym == SDLK_DOWN) {
+				engine.scrollOffset.y += 1;
+			}*/
+		}
 	}
 
 	++updates;
@@ -66,35 +95,35 @@ void SimulationState::update(vector<SDL_Event> input) {
 			mapData[coord.x][coord.y].onFire = true;
 		}
 
-		e.processMap();
+		engine.processMap();
 
 		for (Person& person : people) {
 			person.decide();
 
 			if (person.desiredMove == Person::Direction::UP) {
 				if (person.position.y > 0) {
-					if (!e.tileOccupied(person.position + Coord<int>{0, -1})) {
+					if (!engine.tileOccupied(person.position + Coord<int>{0, -1})) {
 						person.position += {0, -1};
 					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::DOWN) {
 				if (person.position.y < mapData.y - 1) {
-					if (!e.tileOccupied(person.position + Coord<int>{0, 1})) {
+					if (!engine.tileOccupied(person.position + Coord<int>{0, 1})) {
 						person.position += {0, 1};
 					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::LEFT) {
 				if (person.position.x > 0) {
-					if (!e.tileOccupied(person.position + Coord<int>{-1, 0})) {
+					if (!engine.tileOccupied(person.position + Coord<int>{-1, 0})) {
 						person.position += {-1, 0};
 					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::RIGHT) {
 				if (person.position.x < mapData.x - 1) {
-					if (!e.tileOccupied(person.position + Coord<int>{1, 0})) {
+					if (!engine.tileOccupied(person.position + Coord<int>{1, 0})) {
 						person.position += {1, 0};
 					}
 				}
@@ -125,15 +154,14 @@ void SimulationState::render(SDL_Renderer* renderer) {
 
 				if (texture != nullptr) {
 					SDL_Rect texture_rect;
-					texture_rect.x = i * engine.TILE_WIDTH;  //the x coordinate
-					texture_rect.y = j * engine.TILE_HEIGHT; // the y coordinate
+					texture_rect.x = i * engine.TILE_WIDTH - engine.scrollOffset.x;  //the x coordinate
+					texture_rect.y = j * engine.TILE_HEIGHT - engine.scrollOffset.y; // the y coordinate
 					texture_rect.w = engine.TILE_WIDTH; //the width of the texture
 					texture_rect.h = engine.TILE_HEIGHT; //the height of the texture			
 
 					//Render texture to screen
 					SDL_RenderCopy(renderer, texture, NULL, &texture_rect);
 				}
-
 			}
 		}
 	}
@@ -155,7 +183,7 @@ void SimulationState::render(SDL_Renderer* renderer) {
 			if (t.onFire) {
 				//SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
 				src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
-				dest = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
+				dest = { e.TILE_WIDTH * i - e.scrollOffset.x, e.TILE_HEIGHT * j - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 				SDL_RenderCopy(renderer, fireTex, &src, &dest);
 			}
 			else {
@@ -172,7 +200,7 @@ void SimulationState::render(SDL_Renderer* renderer) {
 	for (auto person : people) {
 		if (person.alive) {
 			src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
-			dest = { e.TILE_WIDTH * person.position.x, e.TILE_HEIGHT * person.position.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+			dest = { e.TILE_WIDTH * person.position.x - e.scrollOffset.x, e.TILE_HEIGHT * person.position.y - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 			SDL_RenderCopy(renderer, personTex, &src, &dest);
 		}
 		else {

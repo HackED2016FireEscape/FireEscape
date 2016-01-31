@@ -46,6 +46,20 @@ void PlacementState::update(vector<SDL_Event> input) {
 		cursorPos.x = cursorPos.x > mapData.x - 1 ? mapData.x - 1 : cursorPos.x;
 		cursorPos.y = cursorPos.y < 0 ? 0 : cursorPos.y;
 		cursorPos.y = cursorPos.y > mapData.y - 1 ? mapData.y - 1 : cursorPos.y;
+
+		// #HARDCORE HARDCODE
+		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x < e.TILE_WIDTH) {
+			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH - e.TILE_WIDTH;
+		}
+		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x > e.SCREEN_WIDTH - 2 * e.TILE_WIDTH) {
+			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH + 2 * e.TILE_WIDTH - e.SCREEN_WIDTH;
+		}
+		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y < e.TILE_HEIGHT) {
+			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT - e.TILE_HEIGHT;
+		}
+		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
+			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
+		}
 	}
 	else {
 		for (auto e : input) {
@@ -83,8 +97,8 @@ void PlacementState::render(SDL_Renderer* renderer) {
 
 				if (texture != nullptr) {
 					SDL_Rect texture_rect;
-					texture_rect.x = i * e.TILE_WIDTH;  //the x coordinate
-					texture_rect.y = j * e.TILE_HEIGHT; // the y coordinate
+					texture_rect.x = i * e.TILE_WIDTH - e.scrollOffset.x;  //the x coordinate
+					texture_rect.y = j * e.TILE_HEIGHT - e.scrollOffset.y; // the y coordinate
 					texture_rect.w = e.TILE_WIDTH; //the width of the texture
 					texture_rect.h = e.TILE_HEIGHT; //the height of the texture			
 
@@ -111,7 +125,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 			if (t.onFire) {
 				//SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
 				src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
-				dest = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
+				dest = { e.TILE_WIDTH * i - e.scrollOffset.x, e.TILE_HEIGHT * j - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 				SDL_RenderCopy(renderer, fireTex, &src, &dest);
 			}
 			else {
@@ -127,7 +141,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 
 	if (!menuOpen) {
 		SDL_SetRenderDrawColor(renderer, 0x66, 0x66, 0xFF, 0x66);
-		r = { e.TILE_WIDTH * cursorPos.x, e.TILE_HEIGHT * cursorPos.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+		r = { e.TILE_WIDTH * cursorPos.x - e.scrollOffset.x, e.TILE_HEIGHT * cursorPos.y - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 		SDL_RenderDrawRect(renderer, &r);
 	}
 
