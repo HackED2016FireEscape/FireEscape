@@ -183,7 +183,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		
 		// menu items
 		menu_list[0].x = x; 
-		menu_list[0].y = y + h / 10 + 5;
+		menu_list[0].y = y + (h/10) + 5;
 		menu_list[0].h = (h-(h/10))/3;
 		menu_list[0].w = w;
 		SDL_SetRenderDrawColor(renderer, 160, 177, 187, 0x0A);
@@ -194,6 +194,24 @@ void PlacementState::render(SDL_Renderer* renderer) {
 			SDL_RenderFillRect(renderer, &menu_list[num]);
 			cout << menu_list[num].x << ", " << menu_list[num].y << ", " << menu_list[num].w << ", " << menu_list[num].h << endl;
 		}
+
+		for (int i = 0; i < menu_items; i++) {
+			menu_img[i] = menu_list[i];
+			menu_img[i].x = menu_img[i].x + 5;
+			menu_img[i].y = menu_img[i].y + 5;
+			menu_img[i].h = menu_img[i].h - 10;
+			menu_img[i].w = menu_img[i].h;
+			SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);
+			SDL_RenderFillRect(renderer, &menu_img[i]);
+
+			menu_num[i] = menu_img[i];
+			menu_num[i].x = (menu_num[i].x * 2) + (10 * 2);
+			menu_num[i].y = menu_num[i].y + 5;
+			menu_num[i].h = menu_num[i].h - 10;
+			menu_num[i].w = menu_num[i].h;
+			SDL_RenderFillRect(renderer, &menu_num[i]);
+		}
+		SDL_SetRenderDrawColor(renderer, 160, 177, 187, 0x0A);
 
 		// menu hover
 		drawHover(renderer);
@@ -225,6 +243,19 @@ void PlacementState::drawHover(SDL_Renderer* renderer) {
 
 	SDL_SetRenderDrawColor(renderer, 144, 157, 165, 0x0A);
 	SDL_RenderDrawRect(renderer, &menu_list[hover]);
+
+	menu_img[hover].x = menu_img[hover].x - 3;
+	menu_img[hover].y = menu_img[hover].y - 3;
+	menu_img[hover].h = menu_img[hover].h + 6;
+	menu_img[hover].w = menu_img[hover].w + 6;
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);
+	SDL_RenderFillRect(renderer, &menu_img[hover]);
+
+	menu_num[hover].x = menu_num[hover].x - 3;
+	menu_num[hover].y = menu_num[hover].y - 3;
+	menu_num[hover].h = menu_num[hover].h + 6;
+	menu_num[hover].w = menu_num[hover].h;
+	SDL_RenderFillRect(renderer, &menu_num[hover]);
 
 	if (hover == selected) {
 		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);

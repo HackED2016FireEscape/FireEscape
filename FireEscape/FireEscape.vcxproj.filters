@@ -54,6 +54,9 @@
     <ClCompile Include="person.cpp">
       <Filter>Source Files\ai</Filter>
     </ClCompile>
+    <ClCompile Include="CommPort.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="libpng16-16.dll" />
@@ -61,7 +64,6 @@
     <None Include="SDL2_image.dll" />
     <None Include="zlib1.dll" />
     <None Include="libfreetype-6.dll" />
-    <None Include="SDL2_ttf.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -99,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="person.h">
       <Filter>Source Files\ai</Filter>
+    </ClInclude>
+    <ClInclude Include="CommPort.h">
+      <Filter>Source Files\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
