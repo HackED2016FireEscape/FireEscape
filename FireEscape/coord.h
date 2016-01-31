@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 template <typename T>
 struct Coord {
@@ -26,6 +27,9 @@ struct Coord {
 			x - other.x,
 			y - other.y
 		};
+	}
+	T dist() {
+		return std::abs(x * x + y * y);
 	}
 	bool operator<(const Coord<T>& other) {
 		return x < other.x;
