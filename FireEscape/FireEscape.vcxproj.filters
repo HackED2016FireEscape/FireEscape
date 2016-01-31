@@ -61,7 +61,6 @@
     <None Include="SDL2_image.dll" />
     <None Include="zlib1.dll" />
     <None Include="libfreetype-6.dll" />
-    <None Include="SDL2_ttf.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
