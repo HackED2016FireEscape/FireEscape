@@ -10,7 +10,8 @@
 using namespace std;
 
 PlacementState::PlacementState() {
-	srand(time(NULL));
+	//srand(time(NULL));
+
 }
 
 void PlacementState::update(vector<SDL_Event> input) {
@@ -174,9 +175,34 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		SDL_SetRenderDrawColor(renderer, 0x66, 0x66, 0xFF, 0x66);
 		r = { e.TILE_WIDTH * cursorPos.x - e.scrollOffset.x, e.TILE_HEIGHT * cursorPos.y - e.scrollOffset.y, e.TILE_WIDTH, e.TILE_HEIGHT };
 		SDL_RenderDrawRect(renderer, &r);
+		r.x += 1; r.y += 1; r.w -= 2; r.h -= 2;
+		SDL_RenderDrawRect(renderer, &r);
+
+		if (selected != -1) {
+			SDL_Rect src = {
+				0,
+				0,
+				Engine::getInstance().TILE_WIDTH,
+				Engine::getInstance().TILE_HEIGHT
+			};
+			SDL_Rect dest = {
+				cursorPos.x * Engine::getInstance().TILE_WIDTH - Engine::getInstance().scrollOffset.x,
+				cursorPos.y * Engine::getInstance().TILE_HEIGHT - Engine::getInstance().scrollOffset.y,
+				Engine::getInstance().TILE_WIDTH,
+				Engine::getInstance().TILE_HEIGHT
+			};
+			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			SDL_RenderCopy(renderer, textures[selected], &src, &dest);
+		}
 	}
 
 	if (menuOpen) {
+
+		textures[0] = Engine::getInstance().getTexture(Engine::AssetId::FIRE_EXTINGUISHER);
+		textures[1] = Engine::getInstance().getTexture(Engine::AssetId::FIRE1);
+		textures[2] = Engine::getInstance().getTexture(Engine::AssetId::FIRE2);
+		textures[3] = Engine::getInstance().getTexture(Engine::AssetId::FIRE3);
+		textures[4] = Engine::getInstance().getTexture(Engine::AssetId::FIRE4);
 
 		menu_back.x = x; 
 		menu_back.y = y;
@@ -193,7 +219,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		SDL_SetRenderDrawColor(renderer, 148, 1, 9, 0x0A);
 		SDL_RenderFillRect(renderer, &menu_top);*/
 		
-		// menu items
+		 //menu items
 		menu_list[0].x = x; 
 		menu_list[0].y = y + (h/10) + 5;
 		menu_list[0].h = (h-(h/10))/3;
@@ -222,6 +248,16 @@ void PlacementState::render(SDL_Renderer* renderer) {
 			menu_num[i].h = menu_num[i].h - 10;
 			menu_num[i].w = menu_num[i].h;
 			SDL_RenderFillRect(renderer, &menu_num[i]);
+
+			//SDL_Texture* t = Engine::getInstance().getTexture(Engine::AssetId::FIRE_EXTINGUISHER);
+			SDL_Rect dest = {
+				menu_img[i].x + 10,
+				menu_img[i].y + 8,
+				Engine::getInstance().TILE_WIDTH,
+				Engine::getInstance().TILE_HEIGHT
+			};
+			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			SDL_RenderCopy(renderer, textures[i], NULL, &dest);
 		}
 		SDL_SetRenderDrawColor(renderer, 160, 177, 187, 0x0A);
 
@@ -269,8 +305,25 @@ void PlacementState::drawHover(SDL_Renderer* renderer) {
 	menu_num[hover].w = menu_num[hover].h;
 	SDL_RenderFillRect(renderer, &menu_num[hover]);
 
+
 	if (hover == selected) {
 		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);
 		SDL_RenderDrawRect(renderer, &menu_list[hover]);
 	}
+
+	//SDL_Texture* t = Engine::getInstance().getTexture(Engine::AssetId::FIRE_EXTINGUISHER);
+	SDL_Rect src = {
+		0,
+		0,
+		Engine::getInstance().TILE_WIDTH,
+		Engine::getInstance().TILE_HEIGHT
+	};
+	SDL_Rect dest = {
+		menu_img[hover].x + 12,
+		menu_img[hover].y + 12,
+		Engine::getInstance().TILE_WIDTH,
+		Engine::getInstance().TILE_HEIGHT
+	};
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderCopy(renderer, textures[hover], &src, &dest);
 }
