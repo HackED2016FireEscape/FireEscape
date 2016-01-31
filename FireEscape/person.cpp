@@ -1,6 +1,14 @@
 #include "person.h"
 #include "engine.h"
 
+Person::Person(Coord<int> p)
+:	position(p),
+	desiredMove(Direction::IDLE),
+	alive(true) {
+
+	static unsigned nextId = 0;
+	id = ++nextId;
+}
 
 void Person::decide() {
 	if (!alive) {
@@ -29,4 +37,12 @@ void Person::decide() {
 	//}
 	int direction = (rand() >> 8) % validChoices.size();
 	desiredMove = validChoices[direction];
+}
+
+bool Person::operator==(const Person& other) {
+	return id == other.id;
+}
+
+bool Person::operator!=(const Person& other) {
+	return id != other.id;
 }

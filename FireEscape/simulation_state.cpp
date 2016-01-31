@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <algorithm>
 
 #include "simulation_state.h"
 #include "tmxparser.h"
@@ -11,6 +12,8 @@
 #include "two_d_array.h"
 #include "tile.h"
 #include "coord.h"
+
+using namespace std;
 
 SimulationState::SimulationState() {
 	//srand(time(NULL));
@@ -26,7 +29,7 @@ void SimulationState::update(vector<SDL_Event> input) {
 	++updates;
 	int chance;
 	vector<Coord<int>> toBeLit;
-	if (updates > 10) {
+	if (updates > 60) {
 		updates = 0;
 
 		for (int i = 0; i < mapData.x; ++i) {
@@ -65,25 +68,37 @@ void SimulationState::update(vector<SDL_Event> input) {
 		}
 
 		for (Person& person : people) {
+		}
+
+		for (Person& person : people) {
 			person.decide();
+
 			if (person.desiredMove == Person::Direction::UP) {
 				if (person.position.y > 0) {
-					person.position += {0, -1};
+					if (!e.tileOccupied(person.position + Coord<int>{0, -1})) {
+						person.position += {0, -1};
+					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::DOWN) {
 				if (person.position.y < mapData.y - 1) {
-					person.position += {0, 1};
+					if (!e.tileOccupied(person.position + Coord<int>{0, 1})) {
+						person.position += {0, 1};
+					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::LEFT) {
 				if (person.position.x > 0) {
-					person.position += {-1, 0};
+					if (!e.tileOccupied(person.position + Coord<int>{-1, 0})) {
+						person.position += {-1, 0};
+					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::RIGHT) {
 				if (person.position.x < mapData.x - 1) {
-					person.position += {1, 0};
+					if (!e.tileOccupied(person.position + Coord<int>{1, 0})) {
+						person.position += {1, 0};
+					}
 				}
 			}
 

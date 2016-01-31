@@ -34,6 +34,8 @@ public:
 
 	SDL_Texture* getTexture(int key);
 
+	bool tileOccupied(Coord<int> position);
+
 	TwoDArray<Tile>& getMap();
 	TwoDArray<Tile>& getItems();
 	vector<Person>& getPeople();
@@ -42,7 +44,6 @@ private:
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
-
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
