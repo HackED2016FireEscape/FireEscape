@@ -288,3 +288,11 @@ void SimulationState::reset() {
 	timerStarted = false;
 	simulate = false;
 }
+
+void SimulationState::enter() {
+
+}
+
+void SimulationState::exit() {
+
+}

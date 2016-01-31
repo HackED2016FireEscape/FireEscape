@@ -11,7 +11,6 @@ void MainMenuState::render(SDL_Renderer* renderer) {
 
 	Engine& e = Engine::getInstance();
 
-
 	SDL_SetRenderDrawColor(renderer, 0xAA, 0xEE, 0xFF, 0xFF);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -31,3 +30,11 @@ void MainMenuState::render(SDL_Renderer* renderer) {
 	dest = { e.SCREEN_WIDTH / 2 - w, 400, w * 2, h * 2 };
 	SDL_RenderCopy(renderer, logo, NULL, &dest);
 }
+
+void MainMenuState::enter() {
+	Mix_PlayMusic(Engine::getInstance().music[Engine::SoundId::MENU_MUSIC], -1);
+};
+
+void MainMenuState::exit() {
+	Mix_HaltMusic();
+};

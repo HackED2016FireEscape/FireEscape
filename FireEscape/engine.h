@@ -6,6 +6,7 @@
 #include "tile.h"
 #include "tmxparser.h"
 #include "person.h"
+#include <SDL_mixer.h>
 
 
 using namespace std;
@@ -42,6 +43,12 @@ public:
 		FIRE_TRUCK = -10
 	};
 
+	enum SoundId {
+		MENU_MUSIC,
+		FIRE,
+		SIREN
+	};
+
 	void setState(StateId state);
 
 	SDL_Texture* getTexture(int key);
@@ -63,6 +70,9 @@ public:
 	int left;
 	int right;
 	int peopleCount;
+
+	map<int, Mix_Music*> music;
+	map<int, Mix_Chunk*> sounds;
 
 private:
 	SDL_Window* window;
