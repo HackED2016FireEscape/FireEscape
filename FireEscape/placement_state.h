@@ -5,6 +5,7 @@
 
 class PlacementState : public GameState {
 public:
+	PlacementState();
 	virtual void update(vector<SDL_Event> input);
 	virtual void render(SDL_Renderer* renderer);
 
@@ -22,4 +23,6 @@ private:
 	int h = 200;
 	int w = 600;
 	int selected = 0; 
+
+	int updates = 0;
 };

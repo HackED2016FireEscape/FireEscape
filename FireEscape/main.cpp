@@ -15,7 +15,6 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-
 	Engine& e = Engine::getInstance();
 
 	if (e.init()) {

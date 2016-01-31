@@ -3,9 +3,10 @@
 #include <SDL_image.h>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "engine.h"
-#include "tmxparser.h"
 #include "main_menu_state.h"
 #include "placement_state.h"
 #include "simulation_state.h"
@@ -33,22 +34,38 @@ void Engine::setState(StateId state) {
 }
 
 void Engine::testInit() {
-	mapData.init(30, 10);
+	mapData.init(28, 21);
 	mapData.fill({ false });
-	mapData[0][0] = { true };
-	mapData[1][1] = { true };
-	mapData[2][2] = { true };
-	mapData[3][3] = { true };
-	mapData[4][4] = { true };
+	//mapData[0][0] = { true };
+	//mapData[1][1] = { true };
+	//mapData[2][2] = { true };
+	//mapData[3][3] = { true };
+	//mapData[4][4] = { true };
 	mapData[5][5] = { true };
-	mapData[6][6] = { true };
-	mapData[7][7] = { true };
-	mapData[8][8] = { true };
-	mapData[9][9] = { true };
+	//mapData[6][6] = { true };
+	//mapData[7][7] = { true };
+	//mapData[8][8] = { true };
+	//mapData[9][9] = { true };
+
+	people.clear();
+	people.push_back({ { 2, 12 }, Person::Direction::IDLE, true });
+	people.push_back({ { 3, 6 }, Person::Direction::IDLE, true });
+	people.push_back({ { 8, 1 }, Person::Direction::IDLE, true });
+	people.push_back({ { 22, 3 }, Person::Direction::IDLE, true });
+	people.push_back({ { 4, 18 }, Person::Direction::IDLE, true });
 }
 
 TwoDArray<Tile>& Engine::getMap() {
 	return mapData;
+}
+
+
+tmxparser::TmxMap& Engine::getTiledMap() {
+	return tiledMap;
+}
+
+vector<Person>& Engine::getPeople() {
+	return people;
 }
 
 bool Engine::init() {
@@ -71,8 +88,7 @@ bool Engine::init() {
 	states[StateId::SIMULATION] = new SimulationState{};
 	activeState = StateId::MAIN_MENU;
 
-	parseLevel();
-	testInit();
+	loadLevel("./res/dev-csv.tmx");
 
 	return true;
 }
@@ -142,12 +158,38 @@ void Engine::run() {
 		states[activeState]->render(renderer);
 		SDL_RenderPresent(renderer);
 	}
-
-	
-
 }
 
-void Engine::parseLevel() {
-	tmxparser::TmxMap map;
-	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &map, "./res/");
+void Engine::loadLevel(std::string mapFile) {
+	std::string path = "./res/";
+	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &tiledMap, path);
+
+	// Load the images into our texture map.
+	for (auto it : tiledMap.tilesetCollection[0].tileDefinitions) {
+		tmxparser::TmxImage image = it.second.image;
+
+		std:string imgPath = path + image.source;
+
+
+
+		SDL_Texture* texture = IMG_LoadTexture(renderer, imgPath.c_str());
+		textures[it.second.id] = texture;
+	}
+
+	// Now we build our level.
+	int across = tiledMap.layerCollection[0].width;
+	int down = tiledMap.layerCollection[0].height;
+	mapData.init(across, down);
+	std::vector<tmxparser::TmxLayerTile> tiles = tiledMap.layerCollection[0].tiles;
+
+	for (int j = 0; j < down; j++) {
+		for (int i = 0; i < across; i++) {
+			mapData[i][j] = { true, tiles[i * j].gid };
+			
+		}
+	}	
+}
+
+SDL_Texture* Engine::getTexture(int key) {
+	return textures[key];
 }

@@ -1,11 +1,22 @@
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+
 #include "placement_state.h"
 #include "engine.h"
 #include "two_d_array.h"
 #include "tile.h"
 
+using namespace std;
+
+PlacementState::PlacementState() {
+	srand(time(NULL));
+}
+
 void PlacementState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
 	TwoDArray<Tile>& mapData = e.getMap();
+
 
 	if (!menuOpen) {
 		for (auto e : input) {
@@ -55,7 +66,6 @@ void PlacementState::update(vector<SDL_Event> input) {
 			}
 		}
 	}
-
 }
 
 void PlacementState::render(SDL_Renderer* renderer) {
