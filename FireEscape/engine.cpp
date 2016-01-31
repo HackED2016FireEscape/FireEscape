@@ -3,6 +3,8 @@
 #include <SDL_image.h>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "engine.h"
 #include "tmxparser.h"
@@ -33,18 +35,18 @@ void Engine::setState(StateId state) {
 }
 
 void Engine::testInit() {
-	mapData.init(30, 10);
+	mapData.init(28, 21);
 	mapData.fill({ false });
-	mapData[0][0] = { true };
-	mapData[1][1] = { true };
-	mapData[2][2] = { true };
-	mapData[3][3] = { true };
-	mapData[4][4] = { true };
+	//mapData[0][0] = { true };
+	//mapData[1][1] = { true };
+	//mapData[2][2] = { true };
+	//mapData[3][3] = { true };
+	//mapData[4][4] = { true };
 	mapData[5][5] = { true };
-	mapData[6][6] = { true };
-	mapData[7][7] = { true };
-	mapData[8][8] = { true };
-	mapData[9][9] = { true };
+	//mapData[6][6] = { true };
+	//mapData[7][7] = { true };
+	//mapData[8][8] = { true };
+	//mapData[9][9] = { true };
 }
 
 TwoDArray<Tile>& Engine::getMap() {
@@ -52,6 +54,11 @@ TwoDArray<Tile>& Engine::getMap() {
 }
 
 bool Engine::init() {
+	int num = rand() % 100;
+	while (num < 90) {
+		num = rand() % 100;
+	}
+
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		return false;
