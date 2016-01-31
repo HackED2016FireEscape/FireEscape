@@ -70,6 +70,19 @@ void PlacementState::update(vector<SDL_Event> input) {
 		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
 			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
 		}
+
+		if (e.scrollOffset.x < 0) {
+			e.scrollOffset.x = 0;
+		}
+		if (e.scrollOffset.x > mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH) {
+			e.scrollOffset.x = mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH;
+		}
+		if (e.scrollOffset.y < 0) {
+			e.scrollOffset.y = 0;
+		}
+		if (e.scrollOffset.y > mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT) {
+			e.scrollOffset.y = mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
+		}
 	}
 	else {
 		for (auto e : input) {
