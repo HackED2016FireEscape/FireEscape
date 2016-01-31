@@ -54,11 +54,6 @@ TwoDArray<Tile>& Engine::getMap() {
 }
 
 bool Engine::init() {
-	int num = rand() % 100;
-	while (num < 90) {
-		num = rand() % 100;
-	}
-
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		return false;
