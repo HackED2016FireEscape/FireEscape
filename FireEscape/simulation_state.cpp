@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <algorithm>
 
 #include "simulation_state.h"
 #include "tmxparser.h"
@@ -12,13 +13,15 @@
 #include "tile.h"
 #include "coord.h"
 
+using namespace std;
+
 SimulationState::SimulationState() {
 	//srand(time(NULL));
 }
 
 void SimulationState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getMap();
+	TwoDArray<Tile>& mapData = e.getItems();
 	vector<Person>& people = e.getPeople();
 	for (auto e : input) {
 	}
@@ -28,7 +31,6 @@ void SimulationState::update(vector<SDL_Event> input) {
 	vector<Coord<int>> toBeLit;
 	if (updates > 60) {
 		updates = 0;
-
 		for (int i = 0; i < mapData.x; ++i) {
 			for (int j = 0; j < mapData.y; ++j) {
 				Tile& t = mapData[i][j];
@@ -64,26 +66,37 @@ void SimulationState::update(vector<SDL_Event> input) {
 			mapData[coord.x][coord.y].onFire = true;
 		}
 
+		e.processMap();
+
 		for (Person& person : people) {
 			person.decide();
+
 			if (person.desiredMove == Person::Direction::UP) {
 				if (person.position.y > 0) {
-					person.position += {0, -1};
+					if (!e.tileOccupied(person.position + Coord<int>{0, -1})) {
+						person.position += {0, -1};
+					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::DOWN) {
 				if (person.position.y < mapData.y - 1) {
-					person.position += {0, 1};
+					if (!e.tileOccupied(person.position + Coord<int>{0, 1})) {
+						person.position += {0, 1};
+					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::LEFT) {
 				if (person.position.x > 0) {
-					person.position += {-1, 0};
+					if (!e.tileOccupied(person.position + Coord<int>{-1, 0})) {
+						person.position += {-1, 0};
+					}
 				}
 			}
 			if (person.desiredMove == Person::Direction::RIGHT) {
 				if (person.position.x < mapData.x - 1) {
-					person.position += {1, 0};
+					if (!e.tileOccupied(person.position + Coord<int>{1, 0})) {
+						person.position += {1, 0};
+					}
 				}
 			}
 
@@ -96,64 +109,75 @@ void SimulationState::update(vector<SDL_Event> input) {
 
 void SimulationState::render(SDL_Renderer* renderer) {
 
-	/*SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF);
 	
 	Engine &engine = Engine::getInstance();
-	TwoDArray<Tile>& array = engine.getMap();
-	
-	for (int j = 0; j < array.y; j++) {
-		for (int i = 0; i < array.x; i++) {
-			Tile currentTile = array[i][j];
-			SDL_Texture* texture = engine.getTexture(currentTile.gid + 1);
-			
-			SDL_Rect texture_rect;
-			texture_rect.x = i * engine.TILE_WIDTH;  //the x coordinate
-			texture_rect.y = j * engine.TILE_HEIGHT; // the y coordinate
-			texture_rect.w = engine.TILE_WIDTH; //the width of the texture
-			texture_rect.h = engine.TILE_HEIGHT; //the height of the texture			
+	vector<TwoDArray<Tile>*>& mapData = engine.getMap();
 
-			//Render texture to screen
-			SDL_RenderCopy(renderer, texture, NULL, &texture_rect);
 
+	for (auto data : mapData) {
+		// Draw the background tiles
+		for (int j = 0; j < data->y; j++) {
+			for (int i = 0; i < data->x; i++) {
+				Tile currentTile = (*data)[i][j];
+				int temp = currentTile.gid;
+				SDL_Texture* texture = engine.getTexture(currentTile.gid - 1);
+
+				if (texture != nullptr) {
+					SDL_Rect texture_rect;
+					texture_rect.x = i * engine.TILE_WIDTH;  //the x coordinate
+					texture_rect.y = j * engine.TILE_HEIGHT; // the y coordinate
+					texture_rect.w = engine.TILE_WIDTH; //the width of the texture
+					texture_rect.h = engine.TILE_HEIGHT; //the height of the texture			
+
+					//Render texture to screen
+					SDL_RenderCopy(renderer, texture, NULL, &texture_rect);
+				}
+
+			}
 		}
 	}
-		
-		
-		
-
-
-	
-
-	SDL_Rect r = { 10, 10, 10, 10 };
-	SDL_RenderFillRect(renderer, &r);*/
 
 	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getMap();
+	//TwoDArray<Tile>& mapData = e.getMap();
 	vector<Person>& people = e.getPeople();
+	SDL_Texture* fireTex = e.getTexture(33);
+	SDL_Texture* personTex = e.getTexture(38);
+	int w, h;
+	SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
 
-	SDL_Rect r;
-	for (int i = 0; i < mapData.x; ++i) {
-		for (int j = 0; j < mapData.y; ++j) {
-			Tile& t = mapData[i][j];
+	SDL_Rect src;
+	SDL_Rect dest;
+	TwoDArray<Tile>& items = e.getItems();
+	for (int i = 0; i < items.x; ++i) {
+		for (int j = 0; j < items.y; ++j) {
+			Tile& t = items[i][j];
 			if (t.onFire) {
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+				//SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+				src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+				dest = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
+				SDL_RenderCopy(renderer, fireTex, &src, &dest);
 			}
 			else {
-				SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
+				//SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
 			}
-			r = { 21 * (i + 1), 21 * (j + 1), 20, 20 };
-			SDL_RenderFillRect(renderer, &r);
+
+			/*SDL_Rect r = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
+			SDL_SetRenderDrawColor(renderer, 0xFF - 0x11 * t.fireDistance < 0 ? 0 : 0xFF - 0x11 * t.fireDistance, 0x11 * t.fireDistance > 0xFF ? 0xFF : 0x11 * t.fireDistance, 0x00, 0);
+
+			SDL_RenderDrawRect(renderer, &r);*/
 		}
 	}
 
 	for (auto person : people) {
 		if (person.alive) {
-			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
+			src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+			dest = { e.TILE_WIDTH * person.position.x, e.TILE_HEIGHT * person.position.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+			SDL_RenderCopy(renderer, personTex, &src, &dest);
 		}
 		else {
-			SDL_SetRenderDrawColor(renderer, 0x22, 0x22, 0x22, 0xFF);
 		}
-		r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
-		SDL_RenderFillRect(renderer, &r);
+		//r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
+		//SDL_RenderFillRect(renderer, &r);
 	}
 }

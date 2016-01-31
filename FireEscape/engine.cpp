@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <queue>
+#include <set>
 
 #include "engine.h"
 #include "main_menu_state.h"
@@ -33,39 +35,106 @@ void Engine::setState(StateId state) {
 	activeState = state;
 }
 
-void Engine::testInit() {
-	mapData.init(28, 21);
-	mapData.fill({ false });
-	//mapData[0][0] = { true };
-	//mapData[1][1] = { true };
-	//mapData[2][2] = { true };
-	//mapData[3][3] = { true };
-	//mapData[4][4] = { true };
-	mapData[5][5] = { true };
-	//mapData[6][6] = { true };
-	//mapData[7][7] = { true };
-	//mapData[8][8] = { true };
-	//mapData[9][9] = { true };
-
-	people.clear();
-	people.push_back({ { 2, 12 }, Person::Direction::IDLE, true });
-	people.push_back({ { 3, 6 }, Person::Direction::IDLE, true });
-	people.push_back({ { 8, 1 }, Person::Direction::IDLE, true });
-	people.push_back({ { 22, 3 }, Person::Direction::IDLE, true });
-	people.push_back({ { 4, 18 }, Person::Direction::IDLE, true });
+bool Engine::tileOccupied(Coord<int> position) {
+	if (!getItems().fromCoord(position).isPathable) {
+		return true;
+	}
+	for (Person& person : people) {
+		if (person.position == position) {
+			return true;
+		}
+	}
+	return false;
 }
 
-TwoDArray<Tile>& Engine::getMap() {
+vector<TwoDArray<Tile>*>& Engine::getMap() {
 	return mapData;
 }
 
-
-tmxparser::TmxMap& Engine::getTiledMap() {
-	return tiledMap;
+TwoDArray<Tile>& Engine::getItems()
+{
+	return *mapData.at(itemLocation);
 }
 
 vector<Person>& Engine::getPeople() {
 	return people;
+}
+
+void Engine::processMap() {
+	////vector<Coord<int>> checked;
+	//TwoDArray<Tile>& items = getItems();
+
+	//bool* checked = new bool[items.x*items.y];
+	//fill(checked, checked + items.x*items.y, false);
+	//queue<Coord<int>> toCheck;
+
+	//for (int i = 0; i < items.x; ++i) {
+	//	for (int j = 0; j < items.y; ++j) {
+	//		if (items[i][j].onFire) {
+	//			//cout << i << ", " << j << " is on fire!" << endl;
+	//			items[i][j].fireDistance = 0;
+	//			toCheck.push({ i, j });
+	//		}
+	//		else {
+	//			items[i][j].fireDistance = -1;
+	//		}
+	//	}
+	//}
+
+	//while (toCheck.size() > 0) {
+	//	Coord<int> current = toCheck.front();
+	//	//cout << "Checking: " << current.x << ", " << current.y << endl;
+	//	toCheck.pop();
+	//	if (checked[current.x * items.y + current.y]) {
+	//		continue;
+	//	}
+
+	//	Coord<int> n = current + Coord<int>{ 0, -1 };
+	//	Coord<int> s = current + Coord<int>{ 0, 1 };
+	//	Coord<int> e = current + Coord<int>{ 1, 0 };
+	//	Coord<int> w = current + Coord<int>{ -1, 0 };
+
+	//	if (n.y >= 0) {
+	//		if (!checked[n.x * items.y + n.y]) {
+	//			items.fromCoord(n).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(N) Pushing: " << n.x << ", " << n.y << endl;
+	//			//toCheck.push(n);
+	//		}
+	//	}
+	//	if (s.y < items.y) {
+	//		if (!checked[s.x * items.y + s.y]) {
+	//			items.fromCoord(s).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(S) Pushing: " << s.x << ", " << s.y << endl;
+	//			//toCheck.push(s);
+	//		}
+	//	}
+	//	if (e.x < items.x) {
+	//		if (!checked[e.x * items.y + e.y]) {
+	//			items.fromCoord(e).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(E) Pushing: " << e.x << ", " << e.y << endl;
+	//			//toCheck.push(e);
+	//		}
+	//	}
+	//	if (w.x >= 0) {
+	//		if (!checked[w.x * items.y + w.y]) {
+	//			items.fromCoord(w).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(W) Pushing: " << w.x << ", " << w.y << endl;
+	//			//toCheck.push(w);
+	//		}
+	//	}
+	//	checked[current.x * items.y + current.y] = true;
+	//	//SDL_Delay(100);
+	//}
+
+	////cout << "Fire Distances!" << endl;
+	//for (int j = 0; j < items.y; ++j) {
+	//	for (int i = 0; i < items.x; ++i) {
+	//		//cout << items[i][j].fireDistance << " ";
+	//	}
+	//	//cout << endl;
+	//}
+	////cout << "------------------------";
+
 }
 
 bool Engine::init() {
@@ -88,7 +157,10 @@ bool Engine::init() {
 	states[StateId::SIMULATION] = new SimulationState{};
 	activeState = StateId::MAIN_MENU;
 
-	loadLevel("./res/dev-csv.tmx");
+	// Hard-coded ftw
+	textures[AssetId::LOGO] = IMG_LoadTexture(renderer, "res/logo.png");
+	textures[AssetId::PRESS_START] = IMG_LoadTexture(renderer, "res/press_start.png");
+	loadLevel("./res/map2.tmx");
 
 	return true;
 }
@@ -162,37 +234,87 @@ void Engine::run() {
 
 void Engine::loadLevel(std::string mapFile) {
 	std::string path = "./res/";
-	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &tiledMap, path);
-
-	// Load the images into our texture map.
-	if (tiledMap.tilesetCollection.size() == 0) {
-		testInit();
-		return;
-	}
+	tmxparser::TmxReturn error = tmxparser::parseFromFile(mapFile, &tiledMap, path);
 
 	for (auto it : tiledMap.tilesetCollection[0].tileDefinitions) {
 		tmxparser::TmxImage image = it.second.image;
 
-		std:string imgPath = path + image.source;
-
-
+		string imgPath = path + image.source;
 
 		SDL_Texture* texture = IMG_LoadTexture(renderer, imgPath.c_str());
 		textures[it.second.id] = texture;
+
+		// Here we build the default values for each tile.
+		tmxparser::TmxPropertyMap_t properties = it.second.propertyMap;
+		
+		bool onFire = false;
+		bool isPathable = true;
+		bool isFlammable = false;
+		bool isFireSource = false;
+		bool isExit = false;
+		for (auto value : properties) {		
+			if (value.first.compare("onFire") == 0) {
+				if (value.second.compare("true") == 0) {
+					onFire = true;
+				}
+			}
+			else if (value.first.compare("isPathable") == 0) {
+				if (value.second.compare("false") == 0) {
+					isPathable = false;
+				}
+			}
+			else if (value.first.compare("isFlammable") == 0) {
+				if (value.second.compare("true") == 0) {
+					isFlammable = true;
+				}
+			}
+			else if (value.first.compare("isFireSource") == 0) {
+				if (value.second.compare("true") == 0) {
+					isFireSource = true;
+				}
+			}	
+			else if (value.first.compare("isExit") == 0) {
+				if (value.second.compare("true") == 0) {
+					isExit = true;
+				}
+			}
+		}
+		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, (int)it.second.id, isExit };
+
 	}
 
-	// Now we build our level.
-	int across = tiledMap.layerCollection[0].width;
-	int down = tiledMap.layerCollection[0].height;
-	mapData.init(across, down);
-	std::vector<tmxparser::TmxLayerTile> tiles = tiledMap.layerCollection[0].tiles;
+	// Now we build our level.	
+	auto layers = tiledMap.layerCollection;
+	int width = layers[0].width;
+	int height = layers[0].height;
+	itemData.init(width, height);
+	for (int k = 0; k < tiledMap.layerCollection.size(); k++) {
+		auto layer = tiledMap.layerCollection[k];
+		string layerName = layer.name;
 
-	for (int j = 0; j < down; j++) {
-		for (int i = 0; i < across; i++) {
-			mapData[i][j] = { true, tiles[i * j].gid };
-			
+		TwoDArray<Tile>* data = new TwoDArray<Tile>();
+		data->init(width, height);
+
+		// We store where we are keeping the items in the data.
+		if (layer.name.compare("items") == 0) {
+			itemLocation = k;
 		}
-	}	
+
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				int id = layer.tiles[i + width * j].gid;
+
+				(*data)[i][j] = tileDefault[id];
+			}
+		}
+		
+		mapData.push_back(data);
+	}
+
+	people.clear();
+	people.push_back({ { 2, 12 } });
+	people.push_back({ { 3, 6 } });
+	people.push_back({ { 8, 1 } });
 }
 
 SDL_Texture* Engine::getTexture(int key) {

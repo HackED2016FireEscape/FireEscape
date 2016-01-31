@@ -15,6 +15,8 @@ public:
 	const int TILE_WIDTH = 16;
 	const int TILE_HEIGHT = 16;
 
+	int itemLocation;
+
 	static Engine& getInstance();
 
 	bool init();
@@ -28,15 +30,22 @@ public:
 		SIMULATION
 	};
 
-	void setState(StateId state);
+	enum AssetId {
+		LOGO = -2,
+		PRESS_START = -3
+	};
 
-	void testInit();
+	void setState(StateId state);
 
 	SDL_Texture* getTexture(int key);
 
-	TwoDArray<Tile>& getMap();
-	tmxparser::TmxMap& getTiledMap();
+	bool tileOccupied(Coord<int> position);
+
+	vector<TwoDArray<Tile>*>& getMap();
+	TwoDArray<Tile>& getItems();
 	vector<Person>& getPeople();
+
+	void processMap();
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
@@ -50,8 +59,10 @@ private:
 	StateId activeState;
 	map<StateId, GameState*> states;
 	map<int, SDL_Texture*> textures;
+	map<int, Tile> tileDefault;
 
-	TwoDArray<Tile> mapData;
+	TwoDArray<Tile> itemData;
+	vector<TwoDArray<Tile>*> mapData;
 	tmxparser::TmxMap tiledMap;
 	vector<Person> people;
 	

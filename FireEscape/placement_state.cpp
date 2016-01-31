@@ -15,7 +15,7 @@ PlacementState::PlacementState() {
 
 void PlacementState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getMap();
+	TwoDArray<Tile>& mapData = e.getItems();
 
 
 	if (!menuOpen) {
@@ -80,27 +80,65 @@ void PlacementState::update(vector<SDL_Event> input) {
 
 void PlacementState::render(SDL_Renderer* renderer) {
 	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getMap();
-
+	vector<TwoDArray<Tile>*>& mapData = e.getMap();
 	SDL_Rect r;
-	for (int i = 0; i < mapData.x; ++i) {
-		for (int j = 0; j < mapData.y; ++j) {
-			Tile& t = mapData[i][j];
+
+	for (auto data : mapData) {
+		// Draw the background tiles
+		for (int j = 0; j < data->y; j++) {
+			for (int i = 0; i < data->x; i++) {
+				Tile currentTile = (*data)[i][j];
+				int temp = currentTile.gid;
+				SDL_Texture* texture = e.getTexture(currentTile.gid - 1);
+
+				if (texture != nullptr) {
+					SDL_Rect texture_rect;
+					texture_rect.x = i * e.TILE_WIDTH;  //the x coordinate
+					texture_rect.y = j * e.TILE_HEIGHT; // the y coordinate
+					texture_rect.w = e.TILE_WIDTH; //the width of the texture
+					texture_rect.h = e.TILE_HEIGHT; //the height of the texture			
+
+														 //Render texture to screen
+					SDL_RenderCopy(renderer, texture, NULL, &texture_rect);
+				}
+
+			}
+		}
+	}
+	
+	vector<Person>& people = e.getPeople();
+	SDL_Texture* fireTex = e.getTexture(33);
+	SDL_Texture* personTex = e.getTexture(38);
+	//int w, h;
+	//SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
+
+	SDL_Rect src;
+	SDL_Rect dest;
+	TwoDArray<Tile>& items = e.getItems();
+	for (int i = 0; i < items.x; ++i) {
+		for (int j = 0; j < items.y; ++j) {
+			Tile& t = items[i][j];
 			if (t.onFire) {
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+				//SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+				src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+				dest = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
+				SDL_RenderCopy(renderer, fireTex, &src, &dest);
 			}
 			else {
-				SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
+				//SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
 			}
-			r = { 21 * (i + 1), 21 * (j + 1), 20, 20 };
-			SDL_RenderFillRect(renderer, &r);
+
+			/*SDL_Rect r = { e.TILE_WIDTH * i, e.TILE_HEIGHT * j, e.TILE_WIDTH, e.TILE_HEIGHT };
+			SDL_SetRenderDrawColor(renderer, 0xFF - 0x11 * t.fireDistance < 0 ? 0 : 0xFF - 0x11 * t.fireDistance, 0x11 * t.fireDistance > 0xFF ? 0xFF : 0x11 * t.fireDistance, 0x00, 0);
+
+			SDL_RenderDrawRect(renderer, &r);*/
 		}
 	}
 
 	if (!menuOpen) {
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0x66, 0x66, 0xAA);
-		r = { 21 * (cursorPos.x + 1) + 5, 21 * (cursorPos.y + 1) + 5, 10, 10 };
-		SDL_RenderFillRect(renderer, &r);
+		SDL_SetRenderDrawColor(renderer, 0x66, 0x66, 0xFF, 0x66);
+		r = { e.TILE_WIDTH * cursorPos.x, e.TILE_HEIGHT * cursorPos.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+		SDL_RenderDrawRect(renderer, &r);
 	}
 
 	if (menuOpen) {
