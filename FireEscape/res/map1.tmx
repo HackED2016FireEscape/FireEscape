@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" nextobjectid="1">
+ <properties>
+  <property name="bottom" value="17"/>
+  <property name="left" value="10"/>
+  <property name="peopleCount" value="2"/>
+  <property name="right" value="19"/>
+  <property name="top" value="12"/>
+ </properties>
  <tileset firstgid="1" source="maintileset.tsx"/>
  <layer name="floor" width="30" height="30">
   <data>

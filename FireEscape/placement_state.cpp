@@ -261,7 +261,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 	
 	vector<Person>& people = e.getPeople();
 	SDL_Texture* fireTex = e.getTexture(33);
-	SDL_Texture* personTex = e.getTexture(38);
+	SDL_Texture* personTex = e.getTexture(44);
 	SDL_Texture* extinguisherTex = e.getTexture(Engine::AssetId::FIRE_EXTINGUISHER);
 	//int w, h;
 	//SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
