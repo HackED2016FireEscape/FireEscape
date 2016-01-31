@@ -24,7 +24,7 @@ public:
 		return data + index * y;
 	}
 	template<typename T2 = T>
-	T fromCoord(const Coord<T2>& coord) {
+	T& fromCoord(const Coord<T2>& coord) {
 		return (data + coord.x * y)[coord.y];
 	}
 
@@ -32,5 +32,5 @@ public:
 	int y;
 
 private:
-	T* data;
+	T* data = nullptr;
 };

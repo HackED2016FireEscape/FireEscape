@@ -17,15 +17,13 @@ void MainMenuState::render(SDL_Renderer* renderer) {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
 
-	SDL_Texture* logo = e.getTexture(-1);
+	SDL_Texture* logo = e.getTexture(Engine::AssetId::LOGO);
 	SDL_QueryTexture(logo, &format, &access, &w, &h);
 	SDL_Rect dest = { e.SCREEN_WIDTH / 2 - w * 2 , 100, w * 4, h * 4 };
 	SDL_RenderCopy(renderer, logo, NULL, &dest);
 
-	logo = e.getTexture(-2);
+	logo = e.getTexture(Engine::AssetId::PRESS_START);
 	SDL_QueryTexture(logo, &format, &access, &w, &h);
 	dest = { e.SCREEN_WIDTH / 2 - w, 400, w * 2, h * 2 };
 	SDL_RenderCopy(renderer, logo, NULL, &dest);
-
-
 }

@@ -28,6 +28,11 @@ public:
 		SIMULATION
 	};
 
+	enum AssetId {
+		LOGO = -2,
+		PRESS_START = -3
+	};
+
 	void setState(StateId state);
 
 	void testInit();
@@ -37,8 +42,10 @@ public:
 	bool tileOccupied(Coord<int> position);
 
 	TwoDArray<Tile>& getMap();
-	tmxparser::TmxMap& getTiledMap();
+	TwoDArray<Tile>& getItems();
 	vector<Person>& getPeople();
+
+	void processMap();
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
@@ -52,8 +59,10 @@ private:
 	StateId activeState;
 	map<StateId, GameState*> states;
 	map<int, SDL_Texture*> textures;
+	map<int, Tile> tileDefault;
 
 	TwoDArray<Tile> mapData;
+	TwoDArray<Tile> itemData;
 	tmxparser::TmxMap tiledMap;
 	vector<Person> people;
 	
