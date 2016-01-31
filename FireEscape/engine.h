@@ -68,6 +68,8 @@ public:
 	vector<Person>& getPeople();
 
 	void processMap();
+
+	void dump();
 	
 
 	queue<char>& getActions();
@@ -83,11 +85,17 @@ public:
 	int left;
 	int right;
 	int peopleCount;
+	std::string levels[5] = {
+		"./res/map1.tmx",
+		"./res/map2.tmx",
+		"./res/map3.tmx",
+		"./res/map4.tmx",
+		"./res/map5.tmx"
+	};
+	int currentLevel = 0;
 
 	map<int, Mix_Music*> music;
 	map<int, Mix_Chunk*> sounds;
-
-private:
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;

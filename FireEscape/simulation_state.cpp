@@ -78,9 +78,29 @@ void SimulationState::update(vector<SDL_Event> input) {
 				firefighterResponseTime -= rate;
 			}
 			if (firefighterResponseTime < 0) {
-				firefighterResponseTime = 0;
-				rate = 0;
-				simulate = false;
+				reset();
+				Engine& e = Engine::getInstance();
+				Engine::getInstance().currentLevel++;
+				if (Engine::getInstance().currentLevel > 4) {
+					Engine::getInstance().setState(Engine::StateId::MAIN_MENU);
+					Engine::getInstance().currentLevel = 0;
+				}
+				else {
+					Engine::getInstance().loadLevel(Engine::getInstance().levels[e.currentLevel]);
+					Engine::getInstance().setState(Engine::StateId::PLACEMENT);
+				}
+			}
+			bool allDead = true;
+			for (auto p : people) {
+				if (p.alive) {
+					allDead = false;
+				}
+			}
+			if (allDead) {
+				reset();
+				Engine& e = Engine::getInstance();
+				e.currentLevel = 0;
+				e.setState(Engine::StateId::MAIN_MENU);
 			}
 			for (int i = 0; i < mapData.x; ++i) {
 				for (int j = 0; j < mapData.y; ++j) {

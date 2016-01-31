@@ -171,6 +171,7 @@ bool Engine::init() {
 	if (window == NULL) {
 		return false;
 	}
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (renderer == NULL) {
 		return false;
@@ -210,7 +211,7 @@ bool Engine::init() {
 	textures[AssetId::FIRE_EXTINGUISHER] = IMG_LoadTexture(renderer, "res/fire extinguisher.png");
 	textures[AssetId::FIRE_TRUCK] = IMG_LoadTexture(renderer, "res/fire truck.png");
 
-	loadLevel("./res/map5.tmx");
+	loadLevel(levels[currentLevel]);
 
 	return true;
 }
@@ -280,6 +281,10 @@ void Engine::run() {
 		states[activeState]->render(renderer);
 		SDL_RenderPresent(renderer);
 	}
+}
+
+void Engine::dump() {
+	mapData.clear();
 }
 
 void Engine::loadLevel(std::string mapFile) {
