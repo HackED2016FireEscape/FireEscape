@@ -166,6 +166,7 @@ bool Engine::init() {
 	textures[AssetId::FIRE3] = IMG_LoadTexture(renderer, "res/fire2.png");
 	textures[AssetId::FIRE4] = IMG_LoadTexture(renderer, "res/fire3.png");
 	textures[AssetId::FIRE_EXTINGUISHER] = IMG_LoadTexture(renderer, "res/fire extinguisher.png");
+	textures[AssetId::FIRE_TRUCK] = IMG_LoadTexture(renderer, "res/fire truck.png");
 
 	loadLevel("./res/map2.tmx");
 

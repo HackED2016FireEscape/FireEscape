@@ -38,7 +38,8 @@ public:
 		FIRE2 = -6,
 		FIRE3 = -7,
 		FIRE4 = -8,
-		FIRE_EXTINGUISHER = -9
+		FIRE_EXTINGUISHER = -9,
+		FIRE_TRUCK = -10
 	};
 
 	void setState(StateId state);

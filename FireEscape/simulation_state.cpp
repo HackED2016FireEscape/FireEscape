@@ -68,98 +68,113 @@ void SimulationState::update(vector<SDL_Event> input) {
 		}
 	}
 
-	++updates;
-	int chance;
-	vector<Coord<int>> toBeLit;
-	if (updates > 60) {
-		updates = 0;
-		if (countdownEnabled) {
-			firefighterResponseTime -= 1;
-		}
-		for (int i = 0; i < mapData.x; ++i) {
-			for (int j = 0; j < mapData.y; ++j) {
-				Tile& t = mapData[i][j];
-				if (t.onFire) {
-					chance = (rand() >> 4) % 100;
-					//cout << "random output: " << chance << endl;
-					if (chance > 50) {
-						int direction = (rand() >> 8) % 4;
-						if (direction == 0 && i > 0) {
-							toBeLit.push_back({ i - 1, j });
-							//mapData[i - 1][j].onFire = true;
+	if (simulate) {
+		++updates;
+		int chance;
+		vector<Coord<int>> toBeLit;
+		if (updates > 60) {
+			updates = 0;
+			if (timerStarted) {
+				firefighterResponseTime -= rate;
+			}
+			if (firefighterResponseTime < 0) {
+				firefighterResponseTime = 0;
+				rate = 0;
+				simulate = false;
+			}
+			for (int i = 0; i < mapData.x; ++i) {
+				for (int j = 0; j < mapData.y; ++j) {
+					Tile& t = mapData[i][j];
+					if (t.onFire) {
+						chance = (rand() >> 4) % 100;
+						//cout << "random output: " << chance << endl;
+						if (chance > 50) {
+							int direction = (rand() >> 8) % 4;
+							if (direction == 0 && i > 0) {
+								toBeLit.push_back({ i - 1, j });
+								//mapData[i - 1][j].onFire = true;
+							}
+							else if (direction == 1 && i < mapData.x) {
+								toBeLit.push_back({ i + 1, j });
+								//mapData[i + 1][j].onFire = true;
+							}
+							else if (direction == 2 && j > 0) {
+								toBeLit.push_back({ i, j - 1 });
+								//mapData[i][j - 1].onFire = true;
+							}
+							else if (direction == 3 && j < mapData.y) {
+								toBeLit.push_back({ i, j + 1 });
+								//mapData[i][j + 1].onFire = true;
+							}
 						}
-						else if (direction == 1 && i < mapData.x) {
-							toBeLit.push_back({ i + 1, j });
-							//mapData[i + 1][j].onFire = true;
-						}
-						else if (direction == 2 && j > 0) {
-							toBeLit.push_back({ i, j - 1 });
-							//mapData[i][j - 1].onFire = true;
-						}
-						else if (direction == 3 && j < mapData.y) {
-							toBeLit.push_back({ i, j + 1 });
-							//mapData[i][j + 1].onFire = true;
+					}
+					if (t.isFireSource) {
+						chance = (rand() >> 4) % 100;
+						if (chance > 75) {
+							t.onFire = true;
+							timerStarted = true;
 						}
 					}
 				}
 			}
-		}
-		for (auto coord : toBeLit) {
-			if (coord.x < 0 || coord.x >= mapData.x || coord.y < 0 || coord.y >= mapData.y) {
-				continue;
-			}
-			mapData[coord.x][coord.y].onFire = true;
-		}
-
-		engine.processMap();
-
-		for (Person& person : people) {
-			person.decide();
-
-			if (person.desiredMove == Person::Direction::UP) {
-				if (person.position.y > 0) {
-					if (!engine.tileOccupied(person.position + Coord<int>{0, -1})) {
-						person.position += {0, -1};
-					}
+			for (auto coord : toBeLit) {
+				if (coord.x < 0 || coord.x >= mapData.x || coord.y < 0 || coord.y >= mapData.y) {
+					continue;
 				}
-			}
-			if (person.desiredMove == Person::Direction::DOWN) {
-				if (person.position.y < mapData.y - 1) {
-					if (!engine.tileOccupied(person.position + Coord<int>{0, 1})) {
-						person.position += {0, 1};
-					}
-				}
-			}
-			if (person.desiredMove == Person::Direction::LEFT) {
-				if (person.position.x > 0) {
-					if (!engine.tileOccupied(person.position + Coord<int>{-1, 0})) {
-						person.position += {-1, 0};
-					}
-				}
-			}
-			if (person.desiredMove == Person::Direction::RIGHT) {
-				if (person.position.x < mapData.x - 1) {
-					if (!engine.tileOccupied(person.position + Coord<int>{1, 0})) {
-						person.position += {1, 0};
-					}
-				}
+				mapData[coord.x][coord.y].onFire = true;
 			}
 
-			if (mapData.fromCoord(person.position).isFireExtinguisher) {
-				mapData.fromCoord(person.position).isFireExtinguisher = false;
-				person.hasFireExtinguisher = true;
-			}
-			if (person.hasFireExtinguisher) {
-				mapData.fromCoord(person.position).onFire = false;
-			}
-			if (mapData.fromCoord(person.position).onFire) {
-				person.alive = false;
-			}
-			if (mapData.fromCoord(person.position).isExit) {
-				person.escaped = true;
-				countdownEnabled = true;
+			engine.processMap();
+
+			for (Person& person : people) {
+				person.decide();
+
+				if (person.desiredMove == Person::Direction::UP) {
+					if (person.position.y > 0) {
+						if (!engine.tileOccupied(person.position + Coord<int>{0, -1})) {
+							person.position += {0, -1};
+						}
+					}
+				}
+				if (person.desiredMove == Person::Direction::DOWN) {
+					if (person.position.y < mapData.y - 1) {
+						if (!engine.tileOccupied(person.position + Coord<int>{0, 1})) {
+							person.position += {0, 1};
+						}
+					}
+				}
+				if (person.desiredMove == Person::Direction::LEFT) {
+					if (person.position.x > 0) {
+						if (!engine.tileOccupied(person.position + Coord<int>{-1, 0})) {
+							person.position += {-1, 0};
+						}
+					}
+				}
+				if (person.desiredMove == Person::Direction::RIGHT) {
+					if (person.position.x < mapData.x - 1) {
+						if (!engine.tileOccupied(person.position + Coord<int>{1, 0})) {
+							person.position += {1, 0};
+						}
+					}
+				}
+
+				if (mapData.fromCoord(person.position).isFireExtinguisher) {
+					mapData.fromCoord(person.position).isFireExtinguisher = false;
+					person.hasFireExtinguisher = true;
+				}
+				if (person.hasFireExtinguisher) {
+					mapData.fromCoord(person.position).onFire = false;
+				}
+				if (mapData.fromCoord(person.position).onFire) {
+					person.alive = false;
+				}
+				if (mapData.fromCoord(person.position).isExit) {
+					person.escaped = true;
+					rate = 3;
+				}
 			}
 		}
+
 	}
 }
 
@@ -238,4 +253,38 @@ void SimulationState::render(SDL_Renderer* renderer) {
 		//r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
 		//SDL_RenderFillRect(renderer, &r);
 	}
+
+
+
+	SDL_Rect rBkg = { e.SCREEN_WIDTH / 2 - 100, 10, 200, 15 };
+	SDL_Rect rTime = { e.SCREEN_WIDTH / 2 - 99, 11, 198 * (double)firefighterResponseTime / 60, 13 };
+
+	SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0x33, 0xFF);
+	SDL_RenderFillRect(renderer, &rBkg);
+	SDL_SetRenderDrawColor(renderer, 0x33, 0x33, 0xBB, 0xFF);
+	SDL_RenderFillRect(renderer, &rTime);
+
+	SDL_Texture* truck = e.getTexture(Engine::AssetId::FIRE_TRUCK);
+
+	dest = {
+		e.SCREEN_WIDTH / 2 - 90- e.TILE_WIDTH * 2,
+		-5,
+		e.TILE_WIDTH,
+		e.TILE_WIDTH
+	};
+
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderCopy(renderer, truck, NULL, &dest);
+}
+
+void SimulationState::start() {
+	simulate = true;
+}
+
+void SimulationState::reset() {
+	updates = 0;
+	firefighterResponseTime = 60;
+	rate = 1;
+	timerStarted = false;
+	simulate = false;
 }
