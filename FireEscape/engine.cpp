@@ -101,6 +101,9 @@ bool Engine::init() {
 	states[StateId::SIMULATION] = new SimulationState{};
 	activeState = StateId::MAIN_MENU;
 
+	// Hard-coded ftw
+	textures[-1] = IMG_LoadTexture(renderer, "res/logo.png");
+	textures[-2] = IMG_LoadTexture(renderer, "res/press_start.png");
 	loadLevel("./res/dev-csv.tmx");
 
 	return true;

@@ -68,9 +68,6 @@ void SimulationState::update(vector<SDL_Event> input) {
 		}
 
 		for (Person& person : people) {
-		}
-
-		for (Person& person : people) {
 			person.decide();
 
 			if (person.desiredMove == Person::Direction::UP) {
