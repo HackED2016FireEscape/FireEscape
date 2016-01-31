@@ -3,6 +3,8 @@
 #include <SDL_image.h>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "engine.h"
 #include "main_menu_state.h"
@@ -32,27 +34,38 @@ void Engine::setState(StateId state) {
 }
 
 void Engine::testInit() {
-	mapData.init(30, 10);
+	mapData.init(28, 21);
 	mapData.fill({ false });
-	mapData[0][0] = { true };
-	mapData[1][1] = { true };
-	mapData[2][2] = { true };
-	mapData[3][3] = { true };
-	mapData[4][4] = { true };
+	//mapData[0][0] = { true };
+	//mapData[1][1] = { true };
+	//mapData[2][2] = { true };
+	//mapData[3][3] = { true };
+	//mapData[4][4] = { true };
 	mapData[5][5] = { true };
-	mapData[6][6] = { true };
-	mapData[7][7] = { true };
-	mapData[8][8] = { true };
-	mapData[9][9] = { true };
+	//mapData[6][6] = { true };
+	//mapData[7][7] = { true };
+	//mapData[8][8] = { true };
+	//mapData[9][9] = { true };
+
+	people.clear();
+	people.push_back({ { 2, 12 }, Person::Direction::IDLE, true });
+	people.push_back({ { 3, 6 }, Person::Direction::IDLE, true });
+	people.push_back({ { 8, 1 }, Person::Direction::IDLE, true });
+	people.push_back({ { 22, 3 }, Person::Direction::IDLE, true });
+	people.push_back({ { 4, 18 }, Person::Direction::IDLE, true });
 }
 
 TwoDArray<Tile>& Engine::getMap() {
 	return mapData;
 }
 
-tmxparser::TmxMap& Engine::getTiledMap()
-{
+
+tmxparser::TmxMap& Engine::getTiledMap() {
 	return tiledMap;
+}
+
+vector<Person>& Engine::getPeople() {
+	return people;
 }
 
 bool Engine::init() {

@@ -1,4 +1,5 @@
 #pragma once
+#include "coord.h"
 
 template <typename T>
 struct TwoDArray{
@@ -21,6 +22,10 @@ public:
 	}
 	T* operator[](int index) {
 		return data + index * y;
+	}
+	template<typename T2 = T>
+	T fromCoord(const Coord<T2>& coord) {
+		return (data + coord.x * y)[coord.y];
 	}
 
 	int x;

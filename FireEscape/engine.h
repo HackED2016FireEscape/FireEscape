@@ -5,6 +5,7 @@
 #include "two_d_array.h"
 #include "tile.h"
 #include "tmxparser.h"
+#include "person.h"
 
 
 using namespace std;
@@ -35,7 +36,7 @@ public:
 
 	TwoDArray<Tile>& getMap();
 	tmxparser::TmxMap& getTiledMap();
-
+	vector<Person>& getPeople();
 
 private:
 
@@ -52,6 +53,8 @@ private:
 
 	TwoDArray<Tile> mapData;
 	tmxparser::TmxMap tiledMap;
+	vector<Person> people;
+	
 	Engine();
 	~Engine();
 };
