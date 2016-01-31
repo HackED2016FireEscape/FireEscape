@@ -157,7 +157,7 @@ bool Engine::init() {
 	// Hard-coded ftw
 	textures[AssetId::LOGO] = IMG_LoadTexture(renderer, "res/logo.png");
 	textures[AssetId::PRESS_START] = IMG_LoadTexture(renderer, "res/press_start.png");
-	loadLevel("./res/untitled.tmx");
+	loadLevel("./res/map2.tmx");
 
 	return true;
 }
@@ -248,6 +248,7 @@ void Engine::loadLevel(std::string mapFile) {
 		bool isPathable = true;
 		bool isFlammable = false;
 		bool isFireSource = false;
+		bool isExit = false;
 		for (auto value : properties) {		
 			if (value.first.compare("onFire") == 0) {
 				if (value.second.compare("true") == 0) {
@@ -268,9 +269,14 @@ void Engine::loadLevel(std::string mapFile) {
 				if (value.second.compare("true") == 0) {
 					isFireSource = true;
 				}
-			}			
+			}	
+			else if (value.first.compare("isExit") == 0) {
+				if (value.second.compare("true") == 0) {
+					isExit = true;
+				}
+			}
 		}
-		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, (int)it.second.id, true };
+		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, (int)it.second.id, isExit };
 
 	}
 
@@ -281,6 +287,7 @@ void Engine::loadLevel(std::string mapFile) {
 	itemData.init(width, height);
 	for (int k = 0; k < tiledMap.layerCollection.size(); k++) {
 		auto layer = tiledMap.layerCollection[k];
+		string layerName = layer.name;
 
 		TwoDArray<Tile>* data = new TwoDArray<Tile>();
 		data->init(width, height);
