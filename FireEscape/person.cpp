@@ -1,5 +1,6 @@
 #include "person.h"
 #include "engine.h"
+#include <cmath>
 
 Person::Person(Coord<int> p)
 :	position(p),
@@ -26,6 +27,14 @@ void Person::decide() {
 	if (state == State::CALM) {
 		validChoices.push_back(Direction::IDLE);
 	}
+
+	/*int min = abs(goals[0] - position); 
+	for (auto e : goals) {
+		if (min > abs(goals[e] - position)) {
+			min = abs(goals[e] - position; 
+		}
+	}*/
+
 	if (!hasFireExtinguisher) {
 		if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire &&
 			!mapData.fromCoord(position.operator+({ 0, -2 })).onFire &&
