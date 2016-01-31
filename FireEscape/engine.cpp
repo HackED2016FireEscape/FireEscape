@@ -165,6 +165,11 @@ void Engine::loadLevel(std::string mapFile) {
 	tmxparser::TmxReturn error = tmxparser::parseFromFile("./res/dev-csv.tmx", &tiledMap, path);
 
 	// Load the images into our texture map.
+	if (tiledMap.tilesetCollection.size() == 0) {
+		testInit();
+		return;
+	}
+
 	for (auto it : tiledMap.tilesetCollection[0].tileDefinitions) {
 		tmxparser::TmxImage image = it.second.image;
 
