@@ -35,13 +35,13 @@ public:
 	SDL_Texture* getTexture(int key);
 
 	TwoDArray<Tile>& getMap();
-	tmxparser::TmxMap& getTiledMap();
+	TwoDArray<Tile>& getItems();
 	vector<Person>& getPeople();
 
 private:
 
-	const int SCREEN_WIDTH = 1920;
-	const int SCREEN_HEIGHT = 1080;
+	const int SCREEN_WIDTH = 640;
+	const int SCREEN_HEIGHT = 480;
 
 
 	SDL_Window* window;
@@ -50,8 +50,10 @@ private:
 	StateId activeState;
 	map<StateId, GameState*> states;
 	map<int, SDL_Texture*> textures;
+	map<int, Tile> tileDefault;
 
 	TwoDArray<Tile> mapData;
+	TwoDArray<Tile> itemData;
 	tmxparser::TmxMap tiledMap;
 	vector<Person> people;
 	
