@@ -26,7 +26,7 @@ void SimulationState::update(vector<SDL_Event> input) {
 	++updates;
 	int chance;
 	vector<Coord<int>> toBeLit;
-	if (updates > 10) {
+	if (updates > 60) {
 		updates = 0;
 
 		for (int i = 0; i < mapData.x; ++i) {
