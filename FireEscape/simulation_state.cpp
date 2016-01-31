@@ -15,6 +15,7 @@ SimulationState::SimulationState() {
 void SimulationState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
 	TwoDArray<Tile>& mapData = e.getMap();
+	vector<Person>& people = e.getPeople();
 	for (auto e : input) {
 	}
 
@@ -58,12 +59,35 @@ void SimulationState::update(vector<SDL_Event> input) {
 			}
 			mapData[coord.x][coord.y].onFire = true;
 		}
+
+		for (Person& person : people) {
+			person.decide();
+			if (person.desiredMove == Person::Direction::UP) {
+				cout << "UP!" << endl;
+				cout << "before: " << person.position.y << endl;
+				person.position.y -= 1;
+				cout << "after: " << person.position.y << endl;
+			}
+			if (person.desiredMove == Person::Direction::DOWN) {
+				cout << "DOWN!";
+				person.position.y += 1;
+			}
+			if (person.desiredMove == Person::Direction::LEFT) {
+				cout << "LEFT!";
+				person.position.x -= 1;
+			}
+			if (person.desiredMove == Person::Direction::RIGHT) {
+				cout << "RIGHT!";
+				person.position.x += 1;
+			}
+		}
 	}
 }
 
 void SimulationState::render(SDL_Renderer* renderer) {
 	Engine& e = Engine::getInstance();
 	TwoDArray<Tile>& mapData = e.getMap();
+	vector<Person>& people = e.getPeople();
 
 	SDL_Rect r;
 	for (int i = 0; i < mapData.x; ++i) {
@@ -78,5 +102,11 @@ void SimulationState::render(SDL_Renderer* renderer) {
 			r = { 21 * (i + 1), 21 * (j + 1), 20, 20 };
 			SDL_RenderFillRect(renderer, &r);
 		}
+	}
+
+	for (auto person : people) {
+		SDL_SetRenderDrawColor(renderer, 0xAA, 0x55, 0x55, 0xFF);
+		r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
+		SDL_RenderFillRect(renderer, &r);
 	}
 }

@@ -4,6 +4,7 @@
 #include "game_state.h"
 #include "two_d_array.h"
 #include "tile.h"
+#include "person.h"
 
 
 using namespace std;
@@ -28,6 +29,7 @@ public:
 	void testInit();
 
 	TwoDArray<Tile>& getMap();
+	vector<Person>& getPeople();
 
 private:
 
@@ -41,6 +43,7 @@ private:
 	map<StateId, GameState*> states;
 
 	TwoDArray<Tile> mapData;
+	vector<Person> people;
 	
 	Engine();
 	~Engine();
