@@ -4,7 +4,7 @@ struct Tile {
 	bool onFire;
 	bool isPathable;
 	bool isFlammable;
-	bool isFireSource;
+	bool isFireSource;	
 	int gid;
-
+	bool isExit;
 };
