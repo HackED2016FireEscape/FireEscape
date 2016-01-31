@@ -161,6 +161,10 @@ bool Engine::init() {
 	textures[AssetId::LOGO] = IMG_LoadTexture(renderer, "res/logo.png");
 	textures[AssetId::PRESS_START] = IMG_LoadTexture(renderer, "res/press_start.png");
 	textures[AssetId::MAIN_MENU_BACKGROUND] = IMG_LoadTexture(renderer, "res/title_file.png");
+	textures[AssetId::FIRE1] = IMG_LoadTexture(renderer, "res/fire0.png.png");
+	textures[AssetId::FIRE2] = IMG_LoadTexture(renderer, "res/fire1.png.png");
+	textures[AssetId::FIRE3] = IMG_LoadTexture(renderer, "res/fire2.png.png");
+	textures[AssetId::FIRE4] = IMG_LoadTexture(renderer, "res/fire3.png.png");
 	loadLevel("./res/map2.tmx");
 
 	return true;

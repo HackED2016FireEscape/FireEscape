@@ -54,6 +54,9 @@
     <ClCompile Include="person.cpp">
       <Filter>Source Files\ai</Filter>
     </ClCompile>
+    <ClCompile Include="CommPort.cpp">
+      <Filter>Source Files\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="libpng16-16.dll" />
@@ -98,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="person.h">
       <Filter>Source Files\ai</Filter>
+    </ClInclude>
+    <ClInclude Include="CommPort.h">
+      <Filter>Source Files\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

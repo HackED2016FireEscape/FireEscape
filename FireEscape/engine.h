@@ -33,7 +33,11 @@ public:
 	enum AssetId {
 		LOGO = -2,
 		PRESS_START = -3,
-		MAIN_MENU_BACKGROUND = -4
+		MAIN_MENU_BACKGROUND = -4,
+		FIRE1 = -5,
+		FIRE2 = -6,
+		FIRE3 = -7,
+		FIRE4 = -8
 	};
 
 	void setState(StateId state);
