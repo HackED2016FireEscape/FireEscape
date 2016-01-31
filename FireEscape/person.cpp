@@ -38,13 +38,6 @@ void Person::decide() {
 		validChoices.push_back(Direction::IDLE);
 	}
 
-	int min = abs(goals[0] - position); 
-	for (auto e : goals) {
-		if (min > abs(goals[e] - position)) {
-			min = abs(goals[e] - position; 
-		}
-	}
-
 	if (!hasFireExtinguisher) {
 		if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire &&
 			!mapData.fromCoord(position.operator+({ 0, -2 })).onFire &&
@@ -93,6 +86,7 @@ void Person::decide() {
 		}
 		else {
 			state = State::PANIC;
+			
 		}
 	}
 	if (hasFireExtinguisher && state == State::PANIC) {
@@ -148,6 +142,45 @@ void Person::decide() {
 			state = State::PANIC;
 		}
 	}
+
+	// targetted walking 
+	if (state == State::PANIC && goals.size() != 0) {
+		int min = (goals[0] - position).dist();
+		Coord<int> GO = goals[0];
+		for (auto e : goals) {
+			if (min > (e - position).dist()) {
+				min = (e - position).dist();
+				GO = e;
+			}
+		}
+		// need the left right thing of the position we want to go to 
+		if (position.x - GO.x > 0) {
+			preferredChoices.push_back(Direction::LEFT);
+			preferredChoices.push_back(Direction::LEFT);
+			preferredChoices.push_back(Direction::LEFT);
+			preferredChoices.push_back(Direction::LEFT);
+		}
+		else if (position.x - GO.x < 0) {
+			preferredChoices.push_back(Direction::RIGHT);
+			preferredChoices.push_back(Direction::RIGHT);
+			preferredChoices.push_back(Direction::RIGHT);
+			preferredChoices.push_back(Direction::RIGHT);
+		}
+		else if (GO.y - position.y > 0) {
+			preferredChoices.push_back(Direction::DOWN);
+			preferredChoices.push_back(Direction::DOWN);
+			preferredChoices.push_back(Direction::DOWN);
+			preferredChoices.push_back(Direction::DOWN);
+		}
+		else if (position.y - GO.y < 0) {
+			preferredChoices.push_back(Direction::UP);
+			preferredChoices.push_back(Direction::UP);
+			preferredChoices.push_back(Direction::UP);
+			preferredChoices.push_back(Direction::UP);
+		}
+	}
+
+
 	if (preferredChoices.size() > 0) {
 		int direction = (rand() >> 8) % preferredChoices.size();
 		desiredMove = preferredChoices[direction];
