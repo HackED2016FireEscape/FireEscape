@@ -15,8 +15,9 @@ void Person::decide() {
 		desiredMove = Direction::IDLE;
 		return;
 	}
-	TwoDArray<Tile>& map = Engine::getInstance().getMap();
-	TwoDArray<Tile>& mapData = Engine::getInstance().getMap();
+	Engine& e = Engine::getInstance();
+
+	TwoDArray<Tile>& mapData = e.getItems();
 
 	vector<Direction> validChoices = { Direction::IDLE };
 	if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire) {

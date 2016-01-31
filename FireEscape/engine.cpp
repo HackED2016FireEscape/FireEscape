@@ -33,32 +33,6 @@ void Engine::setState(StateId state) {
 	activeState = state;
 }
 
-void Engine::testInit() {
-	mapData.init(28, 21);
-	mapData.fill({ false });
-	//mapData[0][0] = { true };
-	//mapData[1][1] = { true };
-	//mapData[2][2] = { true };
-	//mapData[3][3] = { true };
-	//mapData[4][4] = { true };
-	mapData[5][5] = { true };
-	//mapData[6][6] = { true };
-	//mapData[7][7] = { true };
-	//mapData[8][8] = { true };
-	//mapData[9][9] = { true };
-
-	people.clear();
-	people.push_back({ { 2, 12 } });
-	people.push_back({ { 3, 6 } });
-	people.push_back({ { 8, 1 } });
-	people.push_back({ { 0, 0 } });
-	people.push_back({ { 0, 1 } });
-	people.push_back({ { 1, 1 } });
-	people.push_back({ { 1, 0 } });
-	people.push_back({ { 22, 3 } });
-	people.push_back({ { 4, 18 } });
-}
-
 bool Engine::tileOccupied(Coord<int> position) {
 	for (Person& person : people) {
 		if (person.position == position) {
@@ -68,13 +42,13 @@ bool Engine::tileOccupied(Coord<int> position) {
 	return false;
 }
 
-TwoDArray<Tile>& Engine::getMap() {
+vector<TwoDArray<Tile>*>& Engine::getMap() {
 	return mapData;
 }
 
 TwoDArray<Tile>& Engine::getItems()
 {
-	return itemData;
+	return *mapData.at(itemLocation);
 }
 
 vector<Person>& Engine::getPeople() {
@@ -177,12 +151,6 @@ void Engine::loadLevel(std::string mapFile) {
 	std::string path = "./res/";
 	tmxparser::TmxReturn error = tmxparser::parseFromFile(mapFile, &tiledMap, path);
 
-	// Load the images into our texture map.
-	if (tiledMap.tilesetCollection.size() == 0) {
-		testInit();
-		return;
-	}
-
 	for (auto it : tiledMap.tilesetCollection[0].tileDefinitions) {
 		tmxparser::TmxImage image = it.second.image;
 
@@ -191,33 +159,53 @@ void Engine::loadLevel(std::string mapFile) {
 		SDL_Texture* texture = IMG_LoadTexture(renderer, imgPath.c_str());
 		textures[it.second.id] = texture;
 
-		//Map<std::string, std::string> properties = it.second.propertyMap;
+		// Here we build the default values for each tile.
+		tmxparser::TmxPropertyMap_t properties = it.second.propertyMap;
+		for (auto value : properties) {
+			if (value.second.compare("onFire")) {
 
-		tileDefault[it.second.id] = {};
+			}
+			else if (value.second.compare("isPathable")) {
+
+			}
+			else if (value.second.compare("isFlammable")) {
+
+			}
+			else if (value.second.compare("isFireSource")) {
+
+			}
+
+			tileDefault[it.second.id] = {};
+
+
+		}
+
 	}
 
 	// Now we build our level.	
-	int width = tiledMap.layerCollection[0].width;
-	int height = tiledMap.layerCollection[0].height;
-	mapData.init(width, height);
-	std::vector<tmxparser::TmxLayerTile> mapTiles = tiledMap.layerCollection[0].tiles;
-
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
-			mapData[i][j] = { false, mapTiles[i + width * j].gid };			
-		}
-	}	
-
-	// Get the items
-	width = tiledMap.layerCollection[0].width;
-	height = tiledMap.layerCollection[0].height;
+	auto layers = tiledMap.layerCollection;
+	int width = layers[0].width;
+	int height = layers[0].height;
 	itemData.init(width, height);
-	std::vector<tmxparser::TmxLayerTile> itemTiles = tiledMap.layerCollection[0].tiles;
+	for (int k = 0; k < tiledMap.layerCollection.size(); k++) {
+		auto layer = tiledMap.layerCollection[k];
 
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
-			itemData[i][j] = { false, itemTiles[i + width * j].gid };
+		TwoDArray<Tile>* data = new TwoDArray<Tile>();
+		data->init(width, height);
+
+		// We store where we are keeping the items in the data.
+		if (layer.name.compare("items") == 0) {
+			itemLocation = k;
 		}
+
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				int id = layer.tiles[i + width * j].gid;
+				(*data)[i][j] = { false, false, false, false, id};
+			}
+		}
+		
+		mapData.push_back(data);
 	}
 }
 

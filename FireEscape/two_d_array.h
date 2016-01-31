@@ -32,5 +32,5 @@ public:
 	int y;
 
 private:
-	T* data;
+	T* data = nullptr;
 };

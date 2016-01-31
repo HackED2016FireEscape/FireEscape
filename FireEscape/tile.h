@@ -1,5 +1,9 @@
 #pragma once
 struct Tile {
 	bool onFire;
-	unsigned int gid;
+	bool isPathable;
+	bool isFlammable;
+	bool isFireSource;
+	int gid;
+
 };
