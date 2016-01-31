@@ -19,16 +19,16 @@ void Person::decide() {
 	TwoDArray<Tile>& mapData = Engine::getInstance().getMap();
 
 	vector<Direction> validChoices = { Direction::IDLE };
-	if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire) {
+	if (mapData.fromCoord(position.operator+({ 0, -1 })).fireDistance > 1) {
 		validChoices.push_back(Direction::UP);
 	}
-	if (!mapData.fromCoord(position.operator+({ 0, 1 })).onFire) {
+	if (mapData.fromCoord(position.operator+({ 0, 1 })).fireDistance > 1) {
 		validChoices.push_back(Direction::DOWN);
 	}
-	if (!mapData.fromCoord(position.operator+({ -1, 0 })).onFire) {
+	if (mapData.fromCoord(position.operator+({ -1, 0 })).fireDistance > 1) {
 		validChoices.push_back(Direction::LEFT);
 	}
-	if (!mapData.fromCoord(position.operator+({ 1, 0 })).onFire) {
+	if (mapData.fromCoord(position.operator+({ 1, 0 })).fireDistance > 1) {
 		validChoices.push_back(Direction::RIGHT);
 	}
 	//if (validChoices.size() == 0) {

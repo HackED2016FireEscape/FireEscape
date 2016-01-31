@@ -157,6 +157,7 @@ void SimulationState::render(SDL_Renderer* renderer) {
 	//TwoDArray<Tile>& mapData = e.getMap();
 	vector<Person>& people = e.getPeople();
 	SDL_Texture* fireTex = e.getTexture(5);
+	SDL_Texture* personTex = e.getTexture(9);
 	int w, h;
 	SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
 
@@ -181,15 +182,16 @@ void SimulationState::render(SDL_Renderer* renderer) {
 			SDL_RenderDrawRect(renderer, &r);
 		}
 	}
-/*
+
 	for (auto person : people) {
 		if (person.alive) {
-			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
+			src = { 0, 0, e.TILE_WIDTH, e.TILE_HEIGHT };
+			dest = { e.TILE_WIDTH * person.position.x, e.TILE_HEIGHT * person.position.y, e.TILE_WIDTH, e.TILE_HEIGHT };
+			SDL_RenderCopy(renderer, personTex, &src, &dest);
 		}
 		else {
-			SDL_SetRenderDrawColor(renderer, 0x22, 0x22, 0x22, 0xFF);
 		}
-		r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
-		SDL_RenderFillRect(renderer, &r);
-	}*/
+		//r = { 21 * (person.position.x + 1) + 5, 21 * (person.position.y + 1) + 5, 10, 10 };
+		//SDL_RenderFillRect(renderer, &r);
+	}
 }

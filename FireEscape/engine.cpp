@@ -92,7 +92,7 @@ void Engine::processMap() {
 	for (int i = 0; i < mapData.x; ++i) {
 		for (int j = 0; j < mapData.y; ++j) {
 			if (mapData[i][j].onFire) {
-				cout << i << ", " << j << " is on fire!" << endl;
+				//cout << i << ", " << j << " is on fire!" << endl;
 				mapData[i][j].fireDistance = 0;
 				toCheck.push({ i, j });
 			}
@@ -104,7 +104,7 @@ void Engine::processMap() {
 
 	while (toCheck.size() > 0) {
 		Coord<int> current = toCheck.front();
-		cout << "Checking: " << current.x << ", " << current.y << endl;
+		//cout << "Checking: " << current.x << ", " << current.y << endl;
 		toCheck.pop();
 		if (checked[current.x * mapData.y + current.y]) {
 			continue;
@@ -119,42 +119,42 @@ void Engine::processMap() {
 			if (!checked[n.x * mapData.y + n.y]) {
 				mapData.fromCoord(n).fireDistance = mapData.fromCoord(current).fireDistance + 1;
 				//cout << "(N) Pushing: " << n.x << ", " << n.y << endl;
-				toCheck.push(n);
+				//toCheck.push(n);
 			}
 		}
 		if (s.y < mapData.y) {
 			if (!checked[s.x * mapData.y + s.y]) {
 				mapData.fromCoord(s).fireDistance = mapData.fromCoord(current).fireDistance + 1;
 				//cout << "(S) Pushing: " << s.x << ", " << s.y << endl;
-				toCheck.push(s);
+				//toCheck.push(s);
 			}
 		}
 		if (e.x < mapData.x) {
 			if (!checked[e.x * mapData.y + e.y]) {
 				mapData.fromCoord(e).fireDistance = mapData.fromCoord(current).fireDistance + 1;
 				//cout << "(E) Pushing: " << e.x << ", " << e.y << endl;
-				toCheck.push(e);
+				//toCheck.push(e);
 			}
 		}
 		if (w.x >= 0) {
 			if (!checked[w.x * mapData.y + w.y]) {
 				mapData.fromCoord(w).fireDistance = mapData.fromCoord(current).fireDistance + 1;
 				//cout << "(W) Pushing: " << w.x << ", " << w.y << endl;
-				toCheck.push(w);
+				//toCheck.push(w);
 			}
 		}
 		checked[current.x * mapData.y + current.y] = true;
 		//SDL_Delay(100);
 	}
 
-	cout << "Fire Distances!" << endl;
+	//cout << "Fire Distances!" << endl;
 	for (int j = 0; j < mapData.y; ++j) {
 		for (int i = 0; i < mapData.x; ++i) {
-			cout << mapData[i][j].fireDistance << " ";
+			//cout << mapData[i][j].fireDistance << " ";
 		}
-		cout << endl;
+		//cout << endl;
 	}
-	cout << "------------------------";
+	//cout << "------------------------";
 
 }
 
@@ -299,6 +299,11 @@ void Engine::loadLevel(std::string mapFile) {
 			itemData[i][j] = { false, itemTiles[i + width * j].gid };
 		}
 	}
+
+	people.clear();
+	people.push_back({ { 2, 12 } });
+	people.push_back({ { 3, 6 } });
+	people.push_back({ { 8, 1 } });
 }
 
 SDL_Texture* Engine::getTexture(int key) {
