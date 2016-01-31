@@ -21,7 +21,7 @@ struct Coord {
 			y + other.y
 		};
 	}
-	Coord<T> operator-(const Coord<T>& other) {
+	Coord<T> operator-(Coord<T> other) {
 		return{
 			x - other.x,
 			y - other.y

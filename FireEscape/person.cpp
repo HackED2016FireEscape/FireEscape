@@ -38,12 +38,12 @@ void Person::decide() {
 		validChoices.push_back(Direction::IDLE);
 	}
 
-	/*int min = abs(goals[0] - position); 
+	int min = abs(goals[0] - position); 
 	for (auto e : goals) {
 		if (min > abs(goals[e] - position)) {
 			min = abs(goals[e] - position; 
 		}
-	}*/
+	}
 
 	if (!hasFireExtinguisher) {
 		if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire &&
