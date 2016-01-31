@@ -322,7 +322,7 @@
    <image width="16" height="16" source="counter9.png"/>
   </tile>
   <tile id="29">
-   <image width="16" height="16" source="../../../../Projects/Hackathon2016/FireEscape/FireEscape/res/counter10.png"/>
+   <image width="16" height="16" source="counter10 (1).png"/>
   </tile>
   <tile id="30">
    <image width="16" height="16" source="counter10.png"/>
