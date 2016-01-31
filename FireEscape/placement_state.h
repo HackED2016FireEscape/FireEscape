@@ -20,6 +20,7 @@ private:
 	SDL_Rect menu_list[5];
 	SDL_Rect menu_img[5];
 	SDL_Rect menu_num[5];
+	SDL_Texture* textures[5];
 	int x = 35;
 	int y = 10;
 	int h = 200;

@@ -26,16 +26,29 @@ void SimulationState::update(vector<SDL_Event> input) {
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 
 	if (state[SDL_SCANCODE_LEFT]) {
-		engine.scrollOffset.x -= 1;
+		engine.scrollOffset.x -= 3;
 	}
-	else if (state[SDL_SCANCODE_RIGHT]) {
-		engine.scrollOffset.x += 1;
+	if (state[SDL_SCANCODE_RIGHT]) {
+		engine.scrollOffset.x += 3;
 	}
-	else if (state[SDL_SCANCODE_UP]) {
-		engine.scrollOffset.y -= 1;
+	if (state[SDL_SCANCODE_UP]) {
+		engine.scrollOffset.y -= 3;
 	}
-	else if (state[SDL_SCANCODE_DOWN]) {
-		engine.scrollOffset.y += 1;
+	if (state[SDL_SCANCODE_DOWN]) {
+		engine.scrollOffset.y += 3;
+	}
+
+	if (engine.scrollOffset.x < 0) {
+		engine.scrollOffset.x = 0;
+	}
+	if (engine.scrollOffset.x > mapData.x * engine.TILE_WIDTH - engine.SCREEN_WIDTH) {
+		engine.scrollOffset.x = mapData.x * engine.TILE_WIDTH - engine.SCREEN_WIDTH;
+	}
+	if (engine.scrollOffset.y < 0) {
+		engine.scrollOffset.y = 0;
+	}
+	if (engine.scrollOffset.y > mapData.y * engine.TILE_HEIGHT - engine.SCREEN_HEIGHT) {
+		engine.scrollOffset.y = mapData.y * engine.TILE_HEIGHT - engine.SCREEN_HEIGHT;
 	}
 
 	for (auto e : input) {

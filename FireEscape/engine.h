@@ -1,19 +1,25 @@
 #pragma once
 
 #include <map>
+#include <queue>
+#include <mutex>
+
 #include "game_state.h"
 #include "two_d_array.h"
 #include "tile.h"
 #include "tmxparser.h"
 #include "person.h"
+#include "CommPort.h"
 
 
 using namespace std;
 
+extern CommPort* port;
+
 class Engine {
 public:
-	const int TILE_WIDTH = 16;
-	const int TILE_HEIGHT = 16;
+	const int TILE_WIDTH = 32;
+	const int TILE_HEIGHT = 32;
 
 	int itemLocation;
 
@@ -52,10 +58,15 @@ public:
 	vector<Person>& getPeople();
 
 	void processMap();
+	
+
+	queue<char>& getActions();
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
 
+	mutex actionMutex;
+	
 	Coord<int> scrollOffset = { 0, 0 };
 	int top;
 	int bottom;
@@ -64,6 +75,7 @@ public:
 	int peopleCount;
 
 private:
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
@@ -76,7 +88,9 @@ private:
 	vector<TwoDArray<Tile>*> mapData;
 	tmxparser::TmxMap tiledMap;
 	vector<Person> people;
-	
+	queue<char> actions;
+	thread commThread;
+
 	Engine();
 	~Engine();
 };
