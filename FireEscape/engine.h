@@ -9,6 +9,7 @@
 #include "tile.h"
 #include "tmxparser.h"
 #include "person.h"
+#include <SDL_mixer.h>
 #include "CommPort.h"
 
 
@@ -44,7 +45,16 @@ public:
 		FIRE2 = -6,
 		FIRE3 = -7,
 		FIRE4 = -8,
-		FIRE_EXTINGUISHER = -9
+		FIRE_EXTINGUISHER = -9,
+		FIRE_TRUCK = -10
+	};
+
+	enum SoundId {
+		MENU_MUSIC,
+		FIRE,
+		SIREN,
+		CLICK1,
+		CLICK2
 	};
 
 	void setState(StateId state);
@@ -73,6 +83,9 @@ public:
 	int left;
 	int right;
 	int peopleCount;
+
+	map<int, Mix_Music*> music;
+	map<int, Mix_Chunk*> sounds;
 
 private:
 

@@ -7,6 +7,7 @@
 #include "engine.h"
 #include "two_d_array.h"
 #include "tile.h"
+#include <SDL_mixer.h>
 
 using namespace std;
 
@@ -167,24 +168,26 @@ void PlacementState::update(vector<SDL_Event> input) {
 					}
 				}
 			}
-			cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;
-			cursorPos.x = cursorPos.x > mapData.x - 1 ? mapData.x - 1 : cursorPos.x;
-			cursorPos.y = cursorPos.y < 0 ? 0 : cursorPos.y;
-			cursorPos.y = cursorPos.y > mapData.y - 1 ? mapData.y - 1 : cursorPos.y;
 
-			// #HARDCORE HARDCODE
-			if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x < e.TILE_WIDTH) {
-				e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH - e.TILE_WIDTH;
-			}
-			if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x > e.SCREEN_WIDTH - 2 * e.TILE_WIDTH) {
-				e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH + 2 * e.TILE_WIDTH - e.SCREEN_WIDTH;
-			}
-			if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y < e.TILE_HEIGHT) {
-				e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT - e.TILE_HEIGHT;
-			}
-			if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
-				e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
-			}
+		}
+		cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;
+		cursorPos.x = cursorPos.x > mapData.x - 1 ? mapData.x - 1 : cursorPos.x;
+		cursorPos.y = cursorPos.y < 0 ? 0 : cursorPos.y;
+		cursorPos.y = cursorPos.y > mapData.y - 1 ? mapData.y - 1 : cursorPos.y;
+
+		// #HARDCORE HARDCODE
+		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x < e.TILE_WIDTH) {
+			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH - e.TILE_WIDTH;
+		}
+		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x > e.SCREEN_WIDTH - 2 * e.TILE_WIDTH) {
+			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH + 2 * e.TILE_WIDTH - e.SCREEN_WIDTH;
+		}
+		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y < e.TILE_HEIGHT) {
+			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT - e.TILE_HEIGHT;
+		}
+		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
+			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
+		}
 
 			if (e.scrollOffset.x < 0) {
 				e.scrollOffset.x = 0;
@@ -226,7 +229,7 @@ void PlacementState::update(vector<SDL_Event> input) {
 			}
 		}
 	}
-}
+
 
 void PlacementState::render(SDL_Renderer* renderer) {
 	Engine& e = Engine::getInstance();
@@ -455,4 +458,12 @@ void PlacementState::drawHover(SDL_Renderer* renderer) {
 	};
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderCopy(renderer, textures[hover], &src, &dest);
+}
+
+void PlacementState::enter() {
+
+}
+
+void PlacementState::exit() {
+
 }

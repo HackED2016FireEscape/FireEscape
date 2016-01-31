@@ -3,7 +3,7 @@
  <properties>
   <property name="bottom" value="19"/>
   <property name="left" value="8"/>
-  <property name="peopleCount" value="3"/>
+  <property name="peopleCount" value="1"/>
   <property name="right" value="23"/>
   <property name="top" value="8"/>
  </properties>
