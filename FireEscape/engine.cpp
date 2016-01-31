@@ -7,11 +7,14 @@
 #include <ctime>
 #include <queue>
 #include <set>
+#include <thread>
 
 #include "engine.h"
 #include "main_menu_state.h"
 #include "placement_state.h"
 #include "simulation_state.h"
+#include <windows.h>
+
 
 using namespace std;
 
@@ -137,7 +140,18 @@ void Engine::processMap() {
 
 }
 
+queue<char>& Engine::getActions()
+{
+	return actions;
+}
+
+void portUpdate() {
+	port->update();
+}
+
 bool Engine::init() {
+	commThread = thread(portUpdate);
+	Sleep(10000);
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		return false;
