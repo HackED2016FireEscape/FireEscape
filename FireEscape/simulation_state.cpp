@@ -13,7 +13,7 @@
 #include "coord.h"
 
 SimulationState::SimulationState() {
-	srand(time(NULL));
+	//srand(time(NULL));
 }
 
 void SimulationState::update(vector<SDL_Event> input) {
@@ -26,7 +26,7 @@ void SimulationState::update(vector<SDL_Event> input) {
 	++updates;
 	int chance;
 	vector<Coord<int>> toBeLit;
-	if (updates > 60) {
+	if (updates > 10) {
 		updates = 0;
 
 		for (int i = 0; i < mapData.x; ++i) {
