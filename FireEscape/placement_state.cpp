@@ -40,6 +40,9 @@ void PlacementState::update(vector<SDL_Event> input) {
 					mapData[cursorPos.x][cursorPos.y].onFire =
 						!mapData[cursorPos.x][cursorPos.y].onFire;
 				}
+				else if (e.key.keysym.sym == SDLK_b) {
+					selected = -1; 
+				}
 			}
 		}
 		cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;
@@ -68,14 +71,21 @@ void PlacementState::update(vector<SDL_Event> input) {
 					menuOpen = !menuOpen; 
 				}
 				else if (e.key.keysym.sym == SDLK_DOWN) {
-					if (selected < 2) {
-						selected += 1;
+					if (hover < menu_items - 1) {
+						hover += 1;
 					}
 				}
 				else if (e.key.keysym.sym == SDLK_UP) {
-					if (selected > 0) {
-						selected = selected - 1;
+					if (hover > 0) {
+						hover = hover - 1;
 					}
+				}
+				else if (e.key.keysym.sym == SDLK_a) {
+					selected = hover; 
+					menuOpen = !menuOpen;
+				}
+				else if (e.key.keysym.sym == SDLK_b) {
+					selected = -1;
 				}
 			}
 		}
@@ -151,31 +161,40 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		menu_back.y = y;
 		menu_back.h = h;
 		menu_back.w = w;
-		SDL_SetRenderDrawColor(renderer, 0x66, 0xFF, 0x66, 0x0A);
-		SDL_RenderFillRect(renderer, &menu_back);
+		//SDL_SetRenderDrawColor(renderer, 0x66, 0xFF, 0x66, 0x0A);
+		//SDL_RenderFillRect(renderer, &menu_back);
 
-		menu_top.x = x; 
+		// menu title
+		/*menu_top.x = x; 
 		menu_top.y = y; 
 		menu_top.h = h / 10; 
 		menu_top.w = w; 
-		SDL_SetRenderDrawColor(renderer, 0x66, 0x66, 0xFF, 0x0A);
-		SDL_RenderFillRect(renderer, &menu_top);
+		SDL_SetRenderDrawColor(renderer, 148, 1, 9, 0x0A);
+		SDL_RenderFillRect(renderer, &menu_top);*/
 		
+		// menu items
 		menu_list[0].x = x; 
-		menu_list[0].y = 2 * y + 2;
+		menu_list[0].y = y + menu_top.h + 5;
 		menu_list[0].h = (h-(h/10))/3;
 		menu_list[0].w = w;
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0x66, 0x66, 0x0A);
+		SDL_SetRenderDrawColor(renderer, 160, 177, 187, 0x0A);
 		SDL_RenderFillRect(renderer, &menu_list[0]);
-
 		for (int num = 1; num < menu_items; num++) {
 			menu_list[num] = menu_list[num-1];
-			menu_list[num].y = menu_list[num].y + menu_list[num].h + 1;
+			menu_list[num].y = menu_list[num].y + menu_list[num].h + 5;
 			SDL_RenderFillRect(renderer, &menu_list[num]);
 		}
 
-		SDL_SetRenderDrawColor(renderer, 0x66, 0xFF, 0x66, 0x0A);
-		SDL_RenderDrawRect(renderer, &menu_list[selected]); 
+		// menu hover
+		drawHover(renderer);
+
+		// menu selection
+		if (selected != -1 && hover != selected) {
+			SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);
+			SDL_RenderDrawRect(renderer, &menu_list[selected]);
+		}
+		
+
 
 	}
 
@@ -183,4 +202,22 @@ void PlacementState::render(SDL_Renderer* renderer) {
 
 	//SDL_Rect r = { 10, 10, 10, 10 };
 	//SDL_RenderFillRect(renderer, &r);
+}
+
+
+
+void PlacementState::drawHover(SDL_Renderer* renderer) {
+	menu_list[hover].x = menu_list[hover].x - 25;
+	menu_list[hover].y = menu_list[hover].y - 3;
+	menu_list[hover].h = menu_list[hover].h + 6;
+	menu_list[hover].w = menu_list[hover].w + 50;
+	SDL_RenderFillRect(renderer, &menu_list[hover]);
+
+	SDL_SetRenderDrawColor(renderer, 144, 157, 165, 0x0A);
+	SDL_RenderDrawRect(renderer, &menu_list[hover]);
+
+	if (hover == selected) {
+		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);
+		SDL_RenderDrawRect(renderer, &menu_list[hover]);
+	}
 }

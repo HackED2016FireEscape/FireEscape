@@ -16,10 +16,14 @@ void MainMenuState::render(SDL_Renderer* renderer) {
 	SDL_RenderClear(renderer);
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
+	SDL_Texture* background = e.getTexture(Engine::AssetId::MAIN_MENU_BACKGROUND);
+	SDL_QueryTexture(background, &format, &access, &w, &h);
+	SDL_Rect dest = { 0 , 0, w * 1.5, h * 1.5 };
+	SDL_RenderCopy(renderer, background, NULL, &dest);
 
 	SDL_Texture* logo = e.getTexture(Engine::AssetId::LOGO);
 	SDL_QueryTexture(logo, &format, &access, &w, &h);
-	SDL_Rect dest = { e.SCREEN_WIDTH / 2 - w * 2 , 100, w * 4, h * 4 };
+	dest = { e.SCREEN_WIDTH / 2 - w * 2 , 100, w * 4, h * 4 };
 	SDL_RenderCopy(renderer, logo, NULL, &dest);
 
 	logo = e.getTexture(Engine::AssetId::PRESS_START);
