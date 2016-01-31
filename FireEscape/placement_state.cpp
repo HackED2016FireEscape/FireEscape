@@ -7,6 +7,7 @@
 #include "engine.h"
 #include "two_d_array.h"
 #include "tile.h"
+#include <SDL_mixer.h>
 
 using namespace std;
 
@@ -91,21 +92,26 @@ void PlacementState::update(vector<SDL_Event> input) {
 
 	if (!menuOpen) {
 		for (auto e : input) {
+			bool move = false;
 			if (e.type == SDL_KEYDOWN) {
 				if (e.key.keysym.sym == SDLK_LEFT) {
 					cursorPos.x -= 1;
+					move = true;
 				}
 				else if (e.key.keysym.sym == SDLK_h) {
 					menuOpen = !menuOpen;
 				}
 				else if (e.key.keysym.sym == SDLK_RIGHT) {
 					cursorPos.x += 1;
+					move = true;
 				}
 				else if (e.key.keysym.sym == SDLK_UP) {
 					cursorPos.y -= 1;
+					move = true;
 				}
 				else if (e.key.keysym.sym == SDLK_DOWN) {
 					cursorPos.y += 1;
+					move = true;
 				}
 				else if (e.key.keysym.sym == SDLK_a) {
 					if (selected == -1) {
@@ -120,6 +126,9 @@ void PlacementState::update(vector<SDL_Event> input) {
 				else if (e.key.keysym.sym == SDLK_b) {
 					selected = -1; 
 				}
+			}
+			if (move == true) {
+				Mix_PlayMusic(Engine::getInstance().music[Engine::SoundId::CLICK1], 0);
 			}
 		}
 		cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;

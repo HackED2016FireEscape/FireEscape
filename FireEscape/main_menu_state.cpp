@@ -32,9 +32,9 @@ void MainMenuState::render(SDL_Renderer* renderer) {
 }
 
 void MainMenuState::enter() {
-	Mix_PlayMusic(Engine::getInstance().music[Engine::SoundId::MENU_MUSIC], -1);
+	//Mix_PlayMusic(Engine::getInstance().music[Engine::SoundId::MENU_MUSIC], -1);
 };
 
 void MainMenuState::exit() {
-	Mix_HaltMusic();
+	//Mix_HaltMusic();
 };

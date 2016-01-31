@@ -14,6 +14,9 @@
 #include "placement_state.h"
 #include "simulation_state.h"
 #include <windows.h>
+#include <exception>
+#include <iostream>
+#include <SDL_mixer.h>
 
 
 using namespace std;
@@ -29,9 +32,17 @@ Engine::Engine() {
 }
 
 Engine::~Engine() {
-	for (auto pair : states) {
-		delete pair.second;
+	try {
+		for (auto pair : states) {
+			delete pair.second;
+		}
 	}
+	catch (exception& e) {
+		cout << e.what() << endl;
+	}
+
+	SDL_Quit();
+	IMG_Quit();
 }
 
 void Engine::setState(StateId state) {
@@ -154,6 +165,8 @@ void portUpdate() {
 bool Engine::init() {
 	commThread = thread(portUpdate);
 
+	SDL_Init(SDL_INIT_EVERYTHING);
+
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		return false;
@@ -168,14 +181,16 @@ bool Engine::init() {
 		return false;
 	}
 
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
+	/*if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) != 0)
 	{
 		return false;
 	}
 
 	music[SoundId::MENU_MUSIC] = Mix_LoadMUS("res/POL-tlalok-temple-short.wav");
-	sounds[SoundId::FIRE] = Mix_LoadWAV("res/249418__midimagician__fire-burning-loop.wav");
-	sounds[SoundId::SIREN] = Mix_LoadWAV("res/315758__contramundum__fire-truck-siren.wav");
+	music[SoundId::FIRE] = Mix_LoadMUS("res/249418__midimagician__fire-burning-loop.wav");
+	music[SoundId::SIREN] = Mix_LoadMUS("res/315758__contramundum__fire-truck-siren.wav");
+	music[SoundId::CLICK1] = Mix_LoadMUS("277651__coral - island - studios__button - 4.mp3");
+	music[SoundId::CLICK2] = Mix_LoadMUS("156859__multimax2121__button - 1.wav");*/
 
 	states[StateId::MAIN_MENU] = new MainMenuState{};
 	states[StateId::PLACEMENT] = new PlacementState{};

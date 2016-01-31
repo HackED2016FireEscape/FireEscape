@@ -52,7 +52,9 @@ public:
 	enum SoundId {
 		MENU_MUSIC,
 		FIRE,
-		SIREN
+		SIREN,
+		CLICK1,
+		CLICK2
 	};
 
 	void setState(StateId state);
