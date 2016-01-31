@@ -57,6 +57,11 @@ public:
 	const int SCREEN_HEIGHT = 480;
 
 	Coord<int> scrollOffset = { 0, 0 };
+	int top;
+	int bottom;
+	int left;
+	int right;
+	int peopleCount;
 
 private:
 	SDL_Window* window;
