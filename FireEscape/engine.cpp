@@ -157,6 +157,7 @@ bool Engine::init() {
 	// Hard-coded ftw
 	textures[AssetId::LOGO] = IMG_LoadTexture(renderer, "res/logo.png");
 	textures[AssetId::PRESS_START] = IMG_LoadTexture(renderer, "res/press_start.png");
+	textures[AssetId::MAIN_MENU_BACKGROUND] = IMG_LoadTexture(renderer, "res/title_file.png");
 	loadLevel("./res/map2.tmx");
 
 	return true;
