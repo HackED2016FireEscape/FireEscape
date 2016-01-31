@@ -15,7 +15,7 @@ PlacementState::PlacementState() {
 
 void PlacementState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getMap();
+	TwoDArray<Tile>& mapData = e.getItems();
 
 
 	if (!menuOpen) {
@@ -70,7 +70,7 @@ void PlacementState::update(vector<SDL_Event> input) {
 
 void PlacementState::render(SDL_Renderer* renderer) {
 	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getMap();
+	TwoDArray<Tile>& mapData = e.getItems();
 
 	SDL_Rect r;
 	for (int i = 0; i < mapData.x; ++i) {

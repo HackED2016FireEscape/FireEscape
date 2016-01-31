@@ -35,32 +35,6 @@ void Engine::setState(StateId state) {
 	activeState = state;
 }
 
-void Engine::testInit() {
-	mapData.init(3, 3);
-	mapData.fill({ false });
-	//mapData[0][0] = { true };
-	//mapData[1][1] = { true };
-	//mapData[2][2] = { true };
-	//mapData[3][3] = { true };
-	//mapData[4][4] = { true };
-	mapData[5][5] = { true };
-	//mapData[6][6] = { true };
-	//mapData[7][7] = { true };
-	//mapData[8][8] = { true };
-	//mapData[9][9] = { true };
-
-	people.clear();
-	people.push_back({ { 2, 12 } });
-	people.push_back({ { 3, 6 } });
-	people.push_back({ { 8, 1 } });
-	people.push_back({ { 0, 0 } });
-	people.push_back({ { 0, 1 } });
-	people.push_back({ { 1, 1 } });
-	people.push_back({ { 1, 0 } });
-	people.push_back({ { 22, 3 } });
-	people.push_back({ { 4, 18 } });
-}
-
 bool Engine::tileOccupied(Coord<int> position) {
 	for (Person& person : people) {
 		if (person.position == position) {
@@ -70,13 +44,13 @@ bool Engine::tileOccupied(Coord<int> position) {
 	return false;
 }
 
-TwoDArray<Tile>& Engine::getMap() {
+vector<TwoDArray<Tile>*>& Engine::getMap() {
 	return mapData;
 }
 
 TwoDArray<Tile>& Engine::getItems()
 {
-	return itemData;
+	return *mapData.at(itemLocation);
 }
 
 vector<Person>& Engine::getPeople() {
@@ -84,77 +58,79 @@ vector<Person>& Engine::getPeople() {
 }
 
 void Engine::processMap() {
-	//vector<Coord<int>> checked;
-	bool* checked = new bool[mapData.x*mapData.y];
-	fill(checked, checked + mapData.x*mapData.y, false);
-	queue<Coord<int>> toCheck;
+	////vector<Coord<int>> checked;
+	//TwoDArray<Tile>& items = getItems();
 
-	for (int i = 0; i < mapData.x; ++i) {
-		for (int j = 0; j < mapData.y; ++j) {
-			if (mapData[i][j].onFire) {
-				//cout << i << ", " << j << " is on fire!" << endl;
-				mapData[i][j].fireDistance = 0;
-				toCheck.push({ i, j });
-			}
-			else {
-				mapData[i][j].fireDistance = -1;
-			}
-		}
-	}
+	//bool* checked = new bool[items.x*items.y];
+	//fill(checked, checked + items.x*items.y, false);
+	//queue<Coord<int>> toCheck;
 
-	while (toCheck.size() > 0) {
-		Coord<int> current = toCheck.front();
-		//cout << "Checking: " << current.x << ", " << current.y << endl;
-		toCheck.pop();
-		if (checked[current.x * mapData.y + current.y]) {
-			continue;
-		}
+	//for (int i = 0; i < items.x; ++i) {
+	//	for (int j = 0; j < items.y; ++j) {
+	//		if (items[i][j].onFire) {
+	//			//cout << i << ", " << j << " is on fire!" << endl;
+	//			items[i][j].fireDistance = 0;
+	//			toCheck.push({ i, j });
+	//		}
+	//		else {
+	//			items[i][j].fireDistance = -1;
+	//		}
+	//	}
+	//}
 
-		Coord<int> n = current + Coord<int>{ 0, -1 };
-		Coord<int> s = current + Coord<int>{ 0, 1 };
-		Coord<int> e = current + Coord<int>{ 1, 0 };
-		Coord<int> w = current + Coord<int>{ -1, 0 };
+	//while (toCheck.size() > 0) {
+	//	Coord<int> current = toCheck.front();
+	//	//cout << "Checking: " << current.x << ", " << current.y << endl;
+	//	toCheck.pop();
+	//	if (checked[current.x * items.y + current.y]) {
+	//		continue;
+	//	}
 
-		if (n.y >= 0) {
-			if (!checked[n.x * mapData.y + n.y]) {
-				mapData.fromCoord(n).fireDistance = mapData.fromCoord(current).fireDistance + 1;
-				//cout << "(N) Pushing: " << n.x << ", " << n.y << endl;
-				//toCheck.push(n);
-			}
-		}
-		if (s.y < mapData.y) {
-			if (!checked[s.x * mapData.y + s.y]) {
-				mapData.fromCoord(s).fireDistance = mapData.fromCoord(current).fireDistance + 1;
-				//cout << "(S) Pushing: " << s.x << ", " << s.y << endl;
-				//toCheck.push(s);
-			}
-		}
-		if (e.x < mapData.x) {
-			if (!checked[e.x * mapData.y + e.y]) {
-				mapData.fromCoord(e).fireDistance = mapData.fromCoord(current).fireDistance + 1;
-				//cout << "(E) Pushing: " << e.x << ", " << e.y << endl;
-				//toCheck.push(e);
-			}
-		}
-		if (w.x >= 0) {
-			if (!checked[w.x * mapData.y + w.y]) {
-				mapData.fromCoord(w).fireDistance = mapData.fromCoord(current).fireDistance + 1;
-				//cout << "(W) Pushing: " << w.x << ", " << w.y << endl;
-				//toCheck.push(w);
-			}
-		}
-		checked[current.x * mapData.y + current.y] = true;
-		//SDL_Delay(100);
-	}
+	//	Coord<int> n = current + Coord<int>{ 0, -1 };
+	//	Coord<int> s = current + Coord<int>{ 0, 1 };
+	//	Coord<int> e = current + Coord<int>{ 1, 0 };
+	//	Coord<int> w = current + Coord<int>{ -1, 0 };
 
-	//cout << "Fire Distances!" << endl;
-	for (int j = 0; j < mapData.y; ++j) {
-		for (int i = 0; i < mapData.x; ++i) {
-			//cout << mapData[i][j].fireDistance << " ";
-		}
-		//cout << endl;
-	}
-	//cout << "------------------------";
+	//	if (n.y >= 0) {
+	//		if (!checked[n.x * items.y + n.y]) {
+	//			items.fromCoord(n).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(N) Pushing: " << n.x << ", " << n.y << endl;
+	//			//toCheck.push(n);
+	//		}
+	//	}
+	//	if (s.y < items.y) {
+	//		if (!checked[s.x * items.y + s.y]) {
+	//			items.fromCoord(s).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(S) Pushing: " << s.x << ", " << s.y << endl;
+	//			//toCheck.push(s);
+	//		}
+	//	}
+	//	if (e.x < items.x) {
+	//		if (!checked[e.x * items.y + e.y]) {
+	//			items.fromCoord(e).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(E) Pushing: " << e.x << ", " << e.y << endl;
+	//			//toCheck.push(e);
+	//		}
+	//	}
+	//	if (w.x >= 0) {
+	//		if (!checked[w.x * items.y + w.y]) {
+	//			items.fromCoord(w).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(W) Pushing: " << w.x << ", " << w.y << endl;
+	//			//toCheck.push(w);
+	//		}
+	//	}
+	//	checked[current.x * items.y + current.y] = true;
+	//	//SDL_Delay(100);
+	//}
+
+	////cout << "Fire Distances!" << endl;
+	//for (int j = 0; j < items.y; ++j) {
+	//	for (int i = 0; i < items.x; ++i) {
+	//		//cout << items[i][j].fireDistance << " ";
+	//	}
+	//	//cout << endl;
+	//}
+	////cout << "------------------------";
 
 }
 
@@ -257,12 +233,6 @@ void Engine::loadLevel(std::string mapFile) {
 	std::string path = "./res/";
 	tmxparser::TmxReturn error = tmxparser::parseFromFile(mapFile, &tiledMap, path);
 
-	// Load the images into our texture map.
-	if (tiledMap.tilesetCollection.size() == 0) {
-		testInit();
-		return;
-	}
-
 	for (auto it : tiledMap.tilesetCollection[0].tileDefinitions) {
 		tmxparser::TmxImage image = it.second.image;
 
@@ -271,33 +241,64 @@ void Engine::loadLevel(std::string mapFile) {
 		SDL_Texture* texture = IMG_LoadTexture(renderer, imgPath.c_str());
 		textures[it.second.id] = texture;
 
-		//Map<std::string, std::string> properties = it.second.propertyMap;
+		// Here we build the default values for each tile.
+		tmxparser::TmxPropertyMap_t properties = it.second.propertyMap;
+		
+		bool onFire = false;
+		bool isPathable = true;
+		bool isFlammable = false;
+		bool isFireSource = false;
+		for (auto value : properties) {		
+			if (value.first.compare("onFire") == 0) {
+				if (value.second.compare("true") == 0) {
+					onFire = true;
+				}
+			}
+			else if (value.first.compare("isPathable") == 0) {
+				if (value.second.compare("false") == 0) {
+					isPathable = false;
+				}
+			}
+			else if (value.first.compare("isFlammable") == 0) {
+				if (value.second.compare("true") == 0) {
+					isFlammable = true;
+				}
+			}
+			else if (value.first.compare("isFireSource") == 0) {
+				if (value.second.compare("true") == 0) {
+					isFireSource = true;
+				}
+			}			
+		}
+		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, (int)it.second.id, true };
 
-		tileDefault[it.second.id] = {};
 	}
 
 	// Now we build our level.	
-	int width = tiledMap.layerCollection[0].width;
-	int height = tiledMap.layerCollection[0].height;
-	mapData.init(width, height);
-	std::vector<tmxparser::TmxLayerTile> mapTiles = tiledMap.layerCollection[0].tiles;
-
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
-			mapData[i][j] = { false, mapTiles[i + width * j].gid };			
-		}
-	}	
-
-	// Get the items
-	width = tiledMap.layerCollection[0].width;
-	height = tiledMap.layerCollection[0].height;
+	auto layers = tiledMap.layerCollection;
+	int width = layers[0].width;
+	int height = layers[0].height;
 	itemData.init(width, height);
-	std::vector<tmxparser::TmxLayerTile> itemTiles = tiledMap.layerCollection[0].tiles;
+	for (int k = 0; k < tiledMap.layerCollection.size(); k++) {
+		auto layer = tiledMap.layerCollection[k];
 
-	for (int j = 0; j < height; j++) {
-		for (int i = 0; i < width; i++) {
-			itemData[i][j] = { false, itemTiles[i + width * j].gid };
+		TwoDArray<Tile>* data = new TwoDArray<Tile>();
+		data->init(width, height);
+
+		// We store where we are keeping the items in the data.
+		if (layer.name.compare("items") == 0) {
+			itemLocation = k;
 		}
+
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				int id = layer.tiles[i + width * j].gid;
+
+				(*data)[i][j] = tileDefault[id];
+			}
+		}
+		
+		mapData.push_back(data);
 	}
 
 	people.clear();

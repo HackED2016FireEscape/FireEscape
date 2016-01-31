@@ -24,7 +24,21 @@ public:
 		return data + index * y;
 	}
 	template<typename T2 = T>
-	T& fromCoord(const Coord<T2>& coord) {
+	T& fromCoord(Coord<T2> coord) {
+		if (coord.x < 0) {
+			coord.x = 0;
+		}
+		if (coord.x > x - 1) {
+			coord.x = x - 1;
+		}
+
+		if (coord.y < 0) {
+			coord.y = 0;
+		}
+		if (coord.y > y - 1) {
+			coord.y = y - 1;
+		}
+
 		return (data + coord.x * y)[coord.y];
 	}
 

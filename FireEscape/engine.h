@@ -15,6 +15,8 @@ public:
 	const int TILE_WIDTH = 16;
 	const int TILE_HEIGHT = 16;
 
+	int itemLocation;
+
 	static Engine& getInstance();
 
 	bool init();
@@ -35,13 +37,11 @@ public:
 
 	void setState(StateId state);
 
-	void testInit();
-
 	SDL_Texture* getTexture(int key);
 
 	bool tileOccupied(Coord<int> position);
 
-	TwoDArray<Tile>& getMap();
+	vector<TwoDArray<Tile>*>& getMap();
 	TwoDArray<Tile>& getItems();
 	vector<Person>& getPeople();
 
@@ -61,8 +61,8 @@ private:
 	map<int, SDL_Texture*> textures;
 	map<int, Tile> tileDefault;
 
-	TwoDArray<Tile> mapData;
 	TwoDArray<Tile> itemData;
+	vector<TwoDArray<Tile>*> mapData;
 	tmxparser::TmxMap tiledMap;
 	vector<Person> people;
 	
