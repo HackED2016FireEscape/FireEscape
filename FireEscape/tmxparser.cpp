@@ -360,14 +360,34 @@ TmxReturn _parseTilesetNode(tinyxml2::XMLElement* element, TmxTileset* outTilese
 
 	if (strcmp(element->Name(), "tileset") == 0)
 	{
-		CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "firstgid", &outTileset->firstgid);
-		outTileset->name = element->Attribute("name");
-		CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "tilewidth", &outTileset->tileWidth);
-		CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "tileheight", &outTileset->tileHeight);
-		outTileset->tileSpacingInImage = element->UnsignedAttribute("spacing");
-		outTileset->tileMarginInImage = element->UnsignedAttribute("margin");
-		outTileset->offset.x = 0;
-		outTileset->offset.y = 0;
+		char *source;
+		//std::string source;
+		source = const_cast<char*>(element->Attribute("source"));
+
+		if (source == NULL) {
+			//CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "firstgid", &outTileset->firstgid);
+			outTileset->firstgid = 1;
+			outTileset->name = element->Attribute("name");
+			CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "tilewidth", &outTileset->tileWidth);
+			CHECK_AND_RETRIEVE_REQ_ATTRIBUTE(element->QueryUnsignedAttribute, "tileheight", &outTileset->tileHeight);
+			outTileset->tileSpacingInImage = element->UnsignedAttribute("spacing");
+			outTileset->tileMarginInImage = element->UnsignedAttribute("margin");
+			outTileset->offset.x = 0;
+			outTileset->offset.y = 0;
+		}		
+		else {
+			tinyxml2::XMLDocument doc;
+			std::string cppSource = std::string(source);
+			if (doc.LoadFile(("./res/" + cppSource).c_str()) != tinyxml2::XML_SUCCESS)
+			{
+				LOGE("Cannot read xml file");
+				return TmxReturn::kErrorParsing;
+			}
+
+			tinyxml2::XMLElement* newElement = doc.FirstChildElement("tileset");
+
+			return _parseTilesetNode(newElement, outTileset);
+		}
 
 		// TODO - read TODO at end of this function
 		/*if (element->FirstChildElement("image") == NULL)
