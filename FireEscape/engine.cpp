@@ -36,6 +36,9 @@ void Engine::setState(StateId state) {
 }
 
 bool Engine::tileOccupied(Coord<int> position) {
+	if (!getItems().fromCoord(position).isPathable) {
+		return true;
+	}
 	for (Person& person : people) {
 		if (person.position == position) {
 			return true;

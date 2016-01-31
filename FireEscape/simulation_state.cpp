@@ -141,8 +141,8 @@ void SimulationState::render(SDL_Renderer* renderer) {
 	Engine& e = Engine::getInstance();
 	//TwoDArray<Tile>& mapData = e.getMap();
 	vector<Person>& people = e.getPeople();
-	SDL_Texture* fireTex = e.getTexture(5);
-	SDL_Texture* personTex = e.getTexture(9);
+	SDL_Texture* fireTex = e.getTexture(33);
+	SDL_Texture* personTex = e.getTexture(38);
 	int w, h;
 	SDL_QueryTexture(fireTex, NULL, NULL, &w, &h);
 
