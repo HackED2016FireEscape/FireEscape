@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <queue>
+#include <set>
 
 #include "engine.h"
 #include "main_menu_state.h"
@@ -55,6 +57,83 @@ vector<Person>& Engine::getPeople() {
 	return people;
 }
 
+void Engine::processMap() {
+	////vector<Coord<int>> checked;
+	//TwoDArray<Tile>& items = getItems();
+
+	//bool* checked = new bool[items.x*items.y];
+	//fill(checked, checked + items.x*items.y, false);
+	//queue<Coord<int>> toCheck;
+
+	//for (int i = 0; i < items.x; ++i) {
+	//	for (int j = 0; j < items.y; ++j) {
+	//		if (items[i][j].onFire) {
+	//			//cout << i << ", " << j << " is on fire!" << endl;
+	//			items[i][j].fireDistance = 0;
+	//			toCheck.push({ i, j });
+	//		}
+	//		else {
+	//			items[i][j].fireDistance = -1;
+	//		}
+	//	}
+	//}
+
+	//while (toCheck.size() > 0) {
+	//	Coord<int> current = toCheck.front();
+	//	//cout << "Checking: " << current.x << ", " << current.y << endl;
+	//	toCheck.pop();
+	//	if (checked[current.x * items.y + current.y]) {
+	//		continue;
+	//	}
+
+	//	Coord<int> n = current + Coord<int>{ 0, -1 };
+	//	Coord<int> s = current + Coord<int>{ 0, 1 };
+	//	Coord<int> e = current + Coord<int>{ 1, 0 };
+	//	Coord<int> w = current + Coord<int>{ -1, 0 };
+
+	//	if (n.y >= 0) {
+	//		if (!checked[n.x * items.y + n.y]) {
+	//			items.fromCoord(n).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(N) Pushing: " << n.x << ", " << n.y << endl;
+	//			//toCheck.push(n);
+	//		}
+	//	}
+	//	if (s.y < items.y) {
+	//		if (!checked[s.x * items.y + s.y]) {
+	//			items.fromCoord(s).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(S) Pushing: " << s.x << ", " << s.y << endl;
+	//			//toCheck.push(s);
+	//		}
+	//	}
+	//	if (e.x < items.x) {
+	//		if (!checked[e.x * items.y + e.y]) {
+	//			items.fromCoord(e).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(E) Pushing: " << e.x << ", " << e.y << endl;
+	//			//toCheck.push(e);
+	//		}
+	//	}
+	//	if (w.x >= 0) {
+	//		if (!checked[w.x * items.y + w.y]) {
+	//			items.fromCoord(w).fireDistance = items.fromCoord(current).fireDistance + 1;
+	//			//cout << "(W) Pushing: " << w.x << ", " << w.y << endl;
+	//			//toCheck.push(w);
+	//		}
+	//	}
+	//	checked[current.x * items.y + current.y] = true;
+	//	//SDL_Delay(100);
+	//}
+
+	////cout << "Fire Distances!" << endl;
+	//for (int j = 0; j < items.y; ++j) {
+	//	for (int i = 0; i < items.x; ++i) {
+	//		//cout << items[i][j].fireDistance << " ";
+	//	}
+	//	//cout << endl;
+	//}
+	////cout << "------------------------";
+
+}
+
 bool Engine::init() {
 	window = SDL_CreateWindow("~==FireEscape==~", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
@@ -75,6 +154,9 @@ bool Engine::init() {
 	states[StateId::SIMULATION] = new SimulationState{};
 	activeState = StateId::MAIN_MENU;
 
+	// Hard-coded ftw
+	textures[AssetId::LOGO] = IMG_LoadTexture(renderer, "res/logo.png");
+	textures[AssetId::PRESS_START] = IMG_LoadTexture(renderer, "res/press_start.png");
 	loadLevel("./res/map2.tmx");
 
 	return true;
@@ -225,6 +307,11 @@ void Engine::loadLevel(std::string mapFile) {
 		
 		mapData.push_back(data);
 	}
+
+	people.clear();
+	people.push_back({ { 2, 12 } });
+	people.push_back({ { 3, 6 } });
+	people.push_back({ { 8, 1 } });
 }
 
 SDL_Texture* Engine::getTexture(int key) {

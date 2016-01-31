@@ -30,6 +30,11 @@ public:
 		SIMULATION
 	};
 
+	enum AssetId {
+		LOGO = -2,
+		PRESS_START = -3
+	};
+
 	void setState(StateId state);
 
 	SDL_Texture* getTexture(int key);
@@ -40,10 +45,13 @@ public:
 	TwoDArray<Tile>& getItems();
 	vector<Person>& getPeople();
 
-private:
+	void processMap();
 
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
+
+private:
+
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
