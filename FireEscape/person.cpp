@@ -26,53 +26,108 @@ void Person::decide() {
 	if (state == State::CALM) {
 		validChoices.push_back(Direction::IDLE);
 	}
-	if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire &&
-		!mapData.fromCoord(position.operator+({ 0, -2 })).onFire &&
-		!mapData.fromCoord(position.operator+({ 0, -3 })).onFire) {
-		validChoices.push_back(Direction::UP);
+	if (!hasFireExtinguisher) {
+		if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire &&
+			!mapData.fromCoord(position.operator+({ 0, -2 })).onFire &&
+			!mapData.fromCoord(position.operator+({ 0, -3 })).onFire) {
+			validChoices.push_back(Direction::UP);
+		}
+		else if (mapData.fromCoord(position.operator+({ 0, -1 })).onFire) {
+			preferredChoices.push_back(Direction::DOWN);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
+		if (!mapData.fromCoord(position.operator+({ 0, 1 })).onFire &&
+			!mapData.fromCoord(position.operator+({ 0, 2 })).onFire &&
+			!mapData.fromCoord(position.operator+({ 0, 3 })).onFire) {
+			validChoices.push_back(Direction::DOWN);
+		}
+		else if (mapData.fromCoord(position.operator+({ 0, 1 })).onFire) {
+			preferredChoices.push_back(Direction::UP);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
+		if (!mapData.fromCoord(position.operator+({ -1, 0 })).onFire &&
+			!mapData.fromCoord(position.operator+({ -2, 0 })).onFire &&
+			!mapData.fromCoord(position.operator+({ -3, 0 })).onFire) {
+			validChoices.push_back(Direction::LEFT);
+		}
+		else if (mapData.fromCoord(position.operator+({ -1, 0 })).onFire) {
+			preferredChoices.push_back(Direction::RIGHT);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
+		if (!mapData.fromCoord(position.operator+({ 1, 0 })).onFire &&
+			!mapData.fromCoord(position.operator+({ 2, 0 })).onFire &&
+			!mapData.fromCoord(position.operator+({ 3, 0 })).onFire) {
+			validChoices.push_back(Direction::RIGHT);
+		}
+		else if (mapData.fromCoord(position.operator+({ 1, 0 })).onFire) {
+			preferredChoices.push_back(Direction::LEFT);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
 	}
-	else if(mapData.fromCoord(position.operator+({ 0, -1 })).onFire) {
-		preferredChoices.push_back(Direction::DOWN);
-		state = State::PANIC;
-	}
-	else {
-		state = State::PANIC;
-	}
-	if (!mapData.fromCoord(position.operator+({ 0, 1 })).onFire &&
-		!mapData.fromCoord(position.operator+({ 0, 2 })).onFire &&
-		!mapData.fromCoord(position.operator+({ 0, 3 })).onFire) {
-		validChoices.push_back(Direction::DOWN);
-	}
-	else if (mapData.fromCoord(position.operator+({ 0, 1 })).onFire) {
-		preferredChoices.push_back(Direction::UP);
-		state = State::PANIC;
-	}
-	else {
-		state = State::PANIC;
-	}
-	if (!mapData.fromCoord(position.operator+({ -1, 0 })).onFire &&
-		!mapData.fromCoord(position.operator+({ -2, 0 })).onFire &&
-		!mapData.fromCoord(position.operator+({ -3, 0 })).onFire) {
-		validChoices.push_back(Direction::LEFT);
-	}
-	else if (mapData.fromCoord(position.operator+({ -1, 0 })).onFire) {
-		preferredChoices.push_back(Direction::RIGHT);
-		state = State::PANIC;
-	}
-	else {
-		state = State::PANIC;
-	}
-	if (!mapData.fromCoord(position.operator+({ 1, 0 })).onFire &&
-		!mapData.fromCoord(position.operator+({ 2, 0 })).onFire &&
-		!mapData.fromCoord(position.operator+({ 3, 0 })).onFire) {
-		validChoices.push_back(Direction::RIGHT);
-	}
-	else if (mapData.fromCoord(position.operator+({ 1, 0 })).onFire) {
-		preferredChoices.push_back(Direction::LEFT);
-		state = State::PANIC;
-	}
-	else {
-		state = State::PANIC;
+	if (hasFireExtinguisher && state == State::PANIC) {
+		if (!mapData.fromCoord(position.operator+({ 0, -1 })).isExit &&
+			!mapData.fromCoord(position.operator+({ 0, -2 })).isExit &&
+			!mapData.fromCoord(position.operator+({ 0, -3 })).isExit) {
+			validChoices.push_back(Direction::UP);
+		}
+		else if (mapData.fromCoord(position.operator+({ 0, -1 })).isExit) {
+			preferredChoices.push_back(Direction::DOWN);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
+		if (!mapData.fromCoord(position.operator+({ 0, 1 })).isExit &&
+			!mapData.fromCoord(position.operator+({ 0, 2 })).isExit &&
+			!mapData.fromCoord(position.operator+({ 0, 3 })).isExit) {
+			validChoices.push_back(Direction::DOWN);
+		}
+		else if (mapData.fromCoord(position.operator+({ 0, 1 })).isExit) {
+			preferredChoices.push_back(Direction::UP);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
+		if (!mapData.fromCoord(position.operator+({ -1, 0 })).isExit &&
+			!mapData.fromCoord(position.operator+({ -2, 0 })).isExit &&
+			!mapData.fromCoord(position.operator+({ -3, 0 })).isExit) {
+			validChoices.push_back(Direction::LEFT);
+		}
+		else if (mapData.fromCoord(position.operator+({ -1, 0 })).isExit) {
+			preferredChoices.push_back(Direction::RIGHT);
+			state = State::PANIC;
+		}
+		else {
+			state = State::PANIC;
+		}
+		if (!mapData.fromCoord(position.operator+({ 1, 0 })).isExit &&
+			!mapData.fromCoord(position.operator+({ 2, 0 })).isExit &&
+			!mapData.fromCoord(position.operator+({ 3, 0 })).isExit) {
+			validChoices.push_back(Direction::RIGHT);
+		}
+		else if (mapData.fromCoord(position.operator+({ 1, 0 })).isExit) {
+			preferredChoices.push_back(Direction::LEFT);
+			state = State::PANIC;
+		}
+		else if (mapData.fromCoord(position.operator+({ 0, 0 })).isExit) {
+			//exit; 
+		}
+		else {
+			state = State::PANIC;
+		}
 	}
 	if (preferredChoices.size() > 0) {
 		int direction = (rand() >> 8) % preferredChoices.size();
