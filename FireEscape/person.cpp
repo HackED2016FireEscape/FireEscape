@@ -4,18 +4,25 @@
 
 void Person::decide() {
 	TwoDArray<Tile>& map = Engine::getInstance().getMap();
+	TwoDArray<Tile>& mapData = Engine::getInstance().getMap();
 
-	int direction = (rand() >> 8) % 4;
-	if (direction == 0) {
-		desiredMove = Direction::UP;
+	vector<Direction> validChoices = { Direction::IDLE };
+	if (!mapData.fromCoord(position.operator+({ 0, -1 })).onFire) {
+		validChoices.push_back(Direction::UP);
 	}
-	else if (direction == 1) {
-		desiredMove = Direction::DOWN;
+	if (!mapData.fromCoord(position.operator+({ 0, 1 })).onFire) {
+		validChoices.push_back(Direction::DOWN);
 	}
-	else if (direction == 2) {
-		desiredMove = Direction::LEFT;
+	if (!mapData.fromCoord(position.operator+({ -1, 0 })).onFire) {
+		validChoices.push_back(Direction::LEFT);
 	}
-	else if (direction == 3) {
-		desiredMove = Direction::RIGHT;
+	if (!mapData.fromCoord(position.operator+({ 1, 0 })).onFire) {
+		validChoices.push_back(Direction::RIGHT);
 	}
+	//if (validChoices.size() == 0) {
+	//	desiredMove = Direction::IDLE;
+	//	return;
+	//}
+	int direction = (rand() >> 8) % validChoices.size();
+	desiredMove = validChoices[direction];
 }

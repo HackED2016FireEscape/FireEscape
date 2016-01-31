@@ -4,7 +4,7 @@
 
 struct Person {
 	enum class Direction {
-		LEFT, RIGHT, UP, DOWN
+		LEFT, RIGHT, UP, DOWN, IDLE
 	};
 
 	void decide();

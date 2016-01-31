@@ -63,22 +63,24 @@ void SimulationState::update(vector<SDL_Event> input) {
 		for (Person& person : people) {
 			person.decide();
 			if (person.desiredMove == Person::Direction::UP) {
-				cout << "UP!" << endl;
-				cout << "before: " << person.position.y << endl;
-				person.position.y -= 1;
-				cout << "after: " << person.position.y << endl;
+				if (person.position.y > 0) {
+					person.position += {0, -1};
+				}
 			}
 			if (person.desiredMove == Person::Direction::DOWN) {
-				cout << "DOWN!";
-				person.position.y += 1;
+				if (person.position.y < mapData.y - 1) {
+					person.position += {0, 1};
+				}
 			}
 			if (person.desiredMove == Person::Direction::LEFT) {
-				cout << "LEFT!";
-				person.position.x -= 1;
+				if (person.position.x > 0) {
+					person.position += {-1, 0};
+				}
 			}
 			if (person.desiredMove == Person::Direction::RIGHT) {
-				cout << "RIGHT!";
-				person.position.x += 1;
+				if (person.position.x < mapData.x - 1) {
+					person.position += {1, 0};
+				}
 			}
 		}
 	}
