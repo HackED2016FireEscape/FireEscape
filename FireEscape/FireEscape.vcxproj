@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)lib\SDL2-2.0.4\include;$(ProjectDir)lib\SDL2_image-2.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\lib\SDL2-2.0.4\lib\x86;$(ProjectDir)\lib\SDL2_image-2.0.1\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)lib\SDL2-2.0.4\include;$(ProjectDir)lib\SDL2_mixer-2.0.1\include;$(ProjectDir)lib\SDL2_image-2.0.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\lib\SDL2-2.0.4\lib\x86;$(ProjectDir)lib\SDL2_mixer-2.0.1\lib\x86;$(ProjectDir)\lib\SDL2_image-2.0.1\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -79,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -133,6 +133,7 @@
     <None Include="libpng16-16.dll" />
     <None Include="SDL2.dll" />
     <None Include="SDL2_image.dll" />
+    <None Include="SDL2_mixer.dll" />
     <None Include="zlib1.dll" />
   </ItemGroup>
   <ItemGroup>
