@@ -29,4 +29,5 @@ private:
 
 	int selected = -1;
 	int updates = 0;
+
 };

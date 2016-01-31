@@ -39,7 +39,7 @@ void CommPort::update()
 			char buff[1];
 			ReadFile(commPort, buff, 1, &nRead, NULL);
 			std::cout << buff[0];
-			if (buff[0] != '\0' && buff[0] != '\n' && buff[0] != '\r') {
+			if (buff[0] != '\0' && buff[0] != '\n' && buff[0] != '\r' && buff[0] != ' ') {
 				e.actionMutex.lock();
 				e.getActions().push(buff[0]);
 				e.actionMutex.unlock();

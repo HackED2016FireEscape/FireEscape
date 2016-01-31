@@ -2,7 +2,28 @@
 #include "engine.h"
 
 void MainMenuState::update(vector<SDL_Event> input) {
+	Engine& e = Engine::getInstance();
 
+	if (!e.getActions().empty()) {
+		if (e.actionMutex.try_lock()) {   // only increase if currently not locked.
+			queue<char>& actions = e.getActions();
+
+			for (int i = 0; i < actions.size(); i++) {
+				char action = actions.front();
+				actions.pop();
+
+				switch (action) {
+				case '6':
+					//S
+					e.setState(Engine::StateId::PLACEMENT);
+					break;
+
+				}
+			}
+
+			e.actionMutex.unlock();
+		}
+	}
 }
 
 void MainMenuState::render(SDL_Renderer* renderer) {

@@ -21,161 +21,207 @@ void PlacementState::update(vector<SDL_Event> input) {
 
 	if (!e.getActions().empty()) {
 		if (e.actionMutex.try_lock()) {   // only increase if currently not locked.
-			queue<char> actions = e.getActions();
-
-
+			queue<char>& actions = e.getActions();
 
 			for (int i = 0; i < actions.size(); i++) {
 				char action = actions.front();
 				actions.pop();
 
-				switch (action) {
-				case 'S':
-					e.setState(Engine::StateId::SIMULATION);
-					break;
+				if (!menuOpen) {
+					switch (action) {
+					case '6':
+						//S
+						e.setState(Engine::StateId::SIMULATION);
+						break;
 
-				case 'A':
-					menuOpen = !menuOpen;
-					break;
+					case '0':
+						//A
+						if (selected == -1) {
+							menuOpen = !menuOpen;
+						}
+						else if (selected == 0) {
+							mapData[cursorPos.x][cursorPos.y].isFireExtinguisher =
+								!mapData[cursorPos.x][cursorPos.y].isFireExtinguisher;
+						}
+						
+						break;
 
-				case 'B':
-					selected = -1;
-					break;
+					case '1':
+						// B
+						selected = -1;
+						break;
 
-				case 'U':
-					cursorPos.y -= 1;
-					break;
+					case '5':
+						//up
+						cursorPos.y -= 1;
+						break;
 
-				case 'D':
-					cursorPos.y += 1;
-					break;
+					case '4':
+						//down
+						cursorPos.y += 1;
+						break;
 
-				case 'L':
-					cursorPos.x -= 1;
-					break;
+					case '2':
+						// left
+						cursorPos.x -= 1;
+						break;
 
-				case 'R':
-					cursorPos.x += 1;
-					break;
+					case '3':
+						//right
+						cursorPos.x += 1;
+						break;
 
-				case '7':
-					// up-right
-					cursorPos.y -= 1;
-					cursorPos.x += 1;
-					break;
+						/*case '7':
+							// up-right
+							cursorPos.y -= 1;
+							cursorPos.x -= 1;
+							break;
 
-				case '6':
-					// Up-left
-					cursorPos.y -= 1;
-					cursorPos.x -= 1;
-					break;
+						case '6':
+							// Up-left
+							cursorPos.y -= 1;
+							cursorPos.x += 1;
+							break;
 
-				case '8':
-					// Down-left
-					cursorPos.y += 1;
-					cursorPos.x -= 1;
-					break;
+						case '8':
+							// Down-left
+							cursorPos.y += 1;
+							cursorPos.x -= 1;
+							break;
 
-				case '9':
-					// Down-right
-					cursorPos.y += 1;
-					cursorPos.x += 1;
-					break;
+						case '9':
+							// Down-right
+							cursorPos.y += 1;
+							cursorPos.x += 1;
+							break;*/
+
+					}
+				}
+				else {
+					switch (action) {
+					case '0':
+						//A
+						selected = hover;
+						menuOpen = !menuOpen;
+
+						break;
+
+					case '1':
+						// B
+						selected = -1;
+						menuOpen = !menuOpen;
+						break;
+
+					case '5':
+						//up
+						if (hover > 0) {
+							hover = hover - 1;
+						}
+						break;
+
+					case '4':
+						//down
+						if (hover < menu_items - 1) {
+							hover += 1;
+						}
+
+						break;
+					}
+
 				}
 
+				e.actionMutex.unlock();
+			}
+		}
+
+		if (!menuOpen) {
+			for (auto e : input) {
+				if (e.type == SDL_KEYDOWN) {
+					if (e.key.keysym.sym == SDLK_LEFT) {
+						cursorPos.x -= 1;
+					}
+					else if (e.key.keysym.sym == SDLK_h) {
+						menuOpen = !menuOpen;
+					}
+					else if (e.key.keysym.sym == SDLK_RIGHT) {
+						cursorPos.x += 1;
+					}
+					else if (e.key.keysym.sym == SDLK_UP) {
+						cursorPos.y -= 1;
+					}
+					else if (e.key.keysym.sym == SDLK_DOWN) {
+						cursorPos.y += 1;
+					}
+					else if (e.key.keysym.sym == SDLK_a) {
+						if (selected == -1) {
+							mapData[cursorPos.x][cursorPos.y].onFire =
+								!mapData[cursorPos.x][cursorPos.y].onFire;
+						}
+						else if (selected == 0) {
+							mapData[cursorPos.x][cursorPos.y].isFireExtinguisher =
+								!mapData[cursorPos.x][cursorPos.y].isFireExtinguisher;
+						}
+					}
+					else if (e.key.keysym.sym == SDLK_b) {
+						selected = -1;
+					}
+				}
+			}
+			cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;
+			cursorPos.x = cursorPos.x > mapData.x - 1 ? mapData.x - 1 : cursorPos.x;
+			cursorPos.y = cursorPos.y < 0 ? 0 : cursorPos.y;
+			cursorPos.y = cursorPos.y > mapData.y - 1 ? mapData.y - 1 : cursorPos.y;
+
+			// #HARDCORE HARDCODE
+			if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x < e.TILE_WIDTH) {
+				e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH - e.TILE_WIDTH;
+			}
+			if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x > e.SCREEN_WIDTH - 2 * e.TILE_WIDTH) {
+				e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH + 2 * e.TILE_WIDTH - e.SCREEN_WIDTH;
+			}
+			if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y < e.TILE_HEIGHT) {
+				e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT - e.TILE_HEIGHT;
+			}
+			if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
+				e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
 			}
 
-			e.actionMutex.unlock();
-		}
-	}
-
-	if (!menuOpen) {
-		for (auto e : input) {
-			if (e.type == SDL_KEYDOWN) {
-				if (e.key.keysym.sym == SDLK_LEFT) {
-					cursorPos.x -= 1;
-				}
-				else if (e.key.keysym.sym == SDLK_h) {
-					menuOpen = !menuOpen;
-				}
-				else if (e.key.keysym.sym == SDLK_RIGHT) {
-					cursorPos.x += 1;
-				}
-				else if (e.key.keysym.sym == SDLK_UP) {
-					cursorPos.y -= 1;
-				}
-				else if (e.key.keysym.sym == SDLK_DOWN) {
-					cursorPos.y += 1;
-				}
-				else if (e.key.keysym.sym == SDLK_a) {
-					if (selected == -1) {
-						mapData[cursorPos.x][cursorPos.y].onFire =
-							!mapData[cursorPos.x][cursorPos.y].onFire;
-					}
-					else if (selected == 0) {
-						mapData[cursorPos.x][cursorPos.y].isFireExtinguisher =
-							!mapData[cursorPos.x][cursorPos.y].isFireExtinguisher;
-					}
-				}
-				else if (e.key.keysym.sym == SDLK_b) {
-					selected = -1; 
-				}
+			if (e.scrollOffset.x < 0) {
+				e.scrollOffset.x = 0;
+			}
+			if (e.scrollOffset.x > mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH) {
+				e.scrollOffset.x = mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH;
+			}
+			if (e.scrollOffset.y < 0) {
+				e.scrollOffset.y = 0;
+			}
+			if (e.scrollOffset.y > mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT) {
+				e.scrollOffset.y = mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
 			}
 		}
-		cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;
-		cursorPos.x = cursorPos.x > mapData.x - 1 ? mapData.x - 1 : cursorPos.x;
-		cursorPos.y = cursorPos.y < 0 ? 0 : cursorPos.y;
-		cursorPos.y = cursorPos.y > mapData.y - 1 ? mapData.y - 1 : cursorPos.y;
-
-		// #HARDCORE HARDCODE
-		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x < e.TILE_WIDTH) {
-			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH - e.TILE_WIDTH;
-		}
-		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x > e.SCREEN_WIDTH - 2 * e.TILE_WIDTH) {
-			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH + 2 * e.TILE_WIDTH - e.SCREEN_WIDTH;
-		}
-		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y < e.TILE_HEIGHT) {
-			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT - e.TILE_HEIGHT;
-		}
-		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
-			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
-		}
-
-		if (e.scrollOffset.x < 0) {
-			e.scrollOffset.x = 0;
-		}
-		if (e.scrollOffset.x > mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH) {
-			e.scrollOffset.x = mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH;
-		}
-		if (e.scrollOffset.y < 0) {
-			e.scrollOffset.y = 0;
-		}
-		if (e.scrollOffset.y > mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT) {
-			e.scrollOffset.y = mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
-		}
-	}
-	else {
-		for (auto e : input) {
-			if (e.type == SDL_KEYDOWN) {
-				if (e.key.keysym.sym == SDLK_h) {
-					menuOpen = !menuOpen; 
-				}
-				else if (e.key.keysym.sym == SDLK_DOWN) {
-					if (hover < menu_items - 1) {
-						hover += 1;
+		else {
+			for (auto e : input) {
+				if (e.type == SDL_KEYDOWN) {
+					if (e.key.keysym.sym == SDLK_h) {
+						menuOpen = !menuOpen;
 					}
-				}
-				else if (e.key.keysym.sym == SDLK_UP) {
-					if (hover > 0) {
-						hover = hover - 1;
+					else if (e.key.keysym.sym == SDLK_DOWN) {
+						if (hover < menu_items - 1) {
+							hover += 1;
+						}
 					}
-				}
-				else if (e.key.keysym.sym == SDLK_a) {
-					selected = hover; 
-					menuOpen = !menuOpen;
-				}
-				else if (e.key.keysym.sym == SDLK_b) {
-					selected = -1;
+					else if (e.key.keysym.sym == SDLK_UP) {
+						if (hover > 0) {
+							hover = hover - 1;
+						}
+					}
+					else if (e.key.keysym.sym == SDLK_a) {
+						selected = hover;
+						menuOpen = !menuOpen;
+					}
+					else if (e.key.keysym.sym == SDLK_b) {
+						selected = -1;
+					}
 				}
 			}
 		}
