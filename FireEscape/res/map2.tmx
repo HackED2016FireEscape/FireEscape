@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" nextobjectid="1">
+ <properties>
+  <property name="bottom" value="19"/>
+  <property name="left" value="8"/>
+  <property name="peopleCount" value="3"/>
+  <property name="right" value="23"/>
+  <property name="top" value="8"/>
+ </properties>
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="73" columns="0">
   <tile id="0">
    <image width="16" height="17" source="bed1.png"/>

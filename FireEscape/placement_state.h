@@ -25,8 +25,6 @@ private:
 	int h = 200;
 	int w = 550;
 	int hover = 0; 
-	
-	
 
 	int selected = -1;
 	int updates = 0;

@@ -317,11 +317,38 @@ void Engine::loadLevel(std::string mapFile) {
 		
 		mapData.push_back(data);
 	}
+	for (auto prop : tiledMap.propertyMap) {
+		if (prop.first.compare("top") == 0) {
+			top = stoi(prop.second);
+		}
+		if (prop.first.compare("bottom") == 0) {
+			bottom = stoi(prop.second);
+		}
+		if (prop.first.compare("right") == 0) {
+			right = stoi(prop.second);
+		}
+		if (prop.first.compare("left") == 0) {
+			left = stoi(prop.second);
+		}
+		if (prop.first.compare("peopleCount") == 0) {
+			peopleCount = stoi(prop.second);
+		}
+	}
 
 	people.clear();
-	people.push_back({ { 2, 12 } });
-	people.push_back({ { 3, 6 } });
-	people.push_back({ { 8, 1 } });
+	while (people.size() < peopleCount) {
+		Coord<int> pos = {
+			((rand() >> 8) % (right - left)) + left,
+			((rand() >> 8) % (bottom - top)) + top,
+		};
+		while (tileOccupied(pos)) {
+			pos = {
+				((rand() >> 8) % (right - left)) + left,
+				((rand() >> 8) % (bottom - top)) + top
+			};
+		}
+		people.push_back({pos});
+	}
 }
 
 SDL_Texture* Engine::getTexture(int key) {
