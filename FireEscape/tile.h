@@ -1,3 +1,4 @@
+// Please add new params to the end.
 #pragma once
 struct Tile {
 	bool onFire;

@@ -161,24 +161,34 @@ void Engine::loadLevel(std::string mapFile) {
 
 		// Here we build the default values for each tile.
 		tmxparser::TmxPropertyMap_t properties = it.second.propertyMap;
-		for (auto value : properties) {
-			if (value.second.compare("onFire")) {
-
+		
+		bool onFire = false;
+		bool isPathable = true;
+		bool isFlammable = false;
+		bool isFireSource = false;
+		for (auto value : properties) {		
+			if (value.first.compare("onFire") == 0) {
+				if (value.second.compare("true") == 0) {
+					onFire = true;
+				}
 			}
-			else if (value.second.compare("isPathable")) {
-
+			else if (value.first.compare("isPathable") == 0) {
+				if (value.second.compare("false") == 0) {
+					isPathable = false;
+				}
 			}
-			else if (value.second.compare("isFlammable")) {
-
+			else if (value.first.compare("isFlammable") == 0) {
+				if (value.second.compare("true") == 0) {
+					isFlammable = true;
+				}
 			}
-			else if (value.second.compare("isFireSource")) {
-
-			}
-
-			tileDefault[it.second.id] = {};
-
-
+			else if (value.first.compare("isFireSource") == 0) {
+				if (value.second.compare("true") == 0) {
+					isFireSource = true;
+				}
+			}			
 		}
+		tileDefault[it.second.id] = { onFire, isPathable, isFlammable, isFireSource, (int)it.second.id };
 
 	}
 
@@ -201,7 +211,8 @@ void Engine::loadLevel(std::string mapFile) {
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {
 				int id = layer.tiles[i + width * j].gid;
-				(*data)[i][j] = { false, false, false, false, id};
+
+				(*data)[i][j] = tileDefault[id];
 			}
 		}
 		

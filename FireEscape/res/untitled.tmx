@@ -2,6 +2,9 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="15" height="15" tilewidth="16" tileheight="16" nextobjectid="1">
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="26" columns="0">
   <tile id="0">
+   <properties>
+    <property name="isPathable" value="false"/>
+   </properties>
    <image width="16" height="16" source="door 1.png"/>
   </tile>
   <tile id="1">
@@ -23,6 +26,9 @@
    <image width="16" height="16" source="fire2.png"/>
   </tile>
   <tile id="6">
+   <properties>
+    <property name="onFire" value="true"/>
+   </properties>
    <image width="16" height="16" source="fire3.png"/>
   </tile>
   <tile id="7">
@@ -68,6 +74,9 @@
    <image width="16" height="16" source="wall(straight_h).png"/>
   </tile>
   <tile id="21">
+   <properties>
+    <property name="isPathable" value="false"/>
+   </properties>
    <image width="16" height="16" source="wall(straight_v).png"/>
   </tile>
   <tile id="22">
