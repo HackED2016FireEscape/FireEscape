@@ -25,6 +25,9 @@ void SimulationState::update(vector<SDL_Event> input) {
 	vector<Person>& people = engine.getPeople();
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 
+	if (state[SDL_SCANCODE_ESCAPE]) {
+		engine.setState(Engine::StateId::MAIN_MENU);
+	}
 	if (state[SDL_SCANCODE_LEFT]) {
 		engine.scrollOffset.x -= 3;
 	}
@@ -39,15 +42,13 @@ void SimulationState::update(vector<SDL_Event> input) {
 	}
 	if (state[SDL_SCANCODE_Q]) {
 		reset();
-		Engine& e = Engine::getInstance();
-		Engine::getInstance().currentLevel++;
-		if (Engine::getInstance().currentLevel > 4) {
-			Engine::getInstance().setState(Engine::StateId::MAIN_MENU);
-			Engine::getInstance().currentLevel = 0;
+		if (engine.currentLevel > 4) {
+			engine.setState(Engine::StateId::MAIN_MENU);
+			engine.currentLevel = 0;
 		}
 		else {
-			Engine::getInstance().loadLevel(Engine::getInstance().levels[e.currentLevel]);
-			Engine::getInstance().setState(Engine::StateId::PLACEMENT);
+			engine.loadLevel(engine.levels[engine.currentLevel]);
+			engine.setState(Engine::StateId::PLACEMENT);
 		}
 	}
 

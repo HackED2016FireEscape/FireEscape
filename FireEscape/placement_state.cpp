@@ -16,13 +16,20 @@ PlacementState::PlacementState() {
 
 }
 
+// Keys: 
+//	Escape : returns to main menu
+//	h : opens and closes the menu.
+//	a : places item
+//  b : deselects item
+//	Return: Enter simulation mode
 void PlacementState::update(vector<SDL_Event> input) {
-	Engine& e = Engine::getInstance();
-	TwoDArray<Tile>& mapData = e.getItems();
+	Engine& engine = Engine::getInstance();
+	TwoDArray<Tile>& mapData = engine.getItems();
 
-	if (!e.getActions().empty()) {
-		if (e.actionMutex.try_lock()) {   // only increase if currently not locked.
-			queue<char>& actions = e.getActions();
+	// This is only for the arcade controls.
+	if (!engine.getActions().empty()) {
+		if (engine.actionMutex.try_lock()) {   // only increase if currently not locked.
+			queue<char>& actions = engine.getActions();
 
 			for (int i = 0; i < actions.size(); i++) {
 				char action = actions.front();
@@ -32,7 +39,7 @@ void PlacementState::update(vector<SDL_Event> input) {
 					switch (action) {
 					case '6':
 						//S
-						e.setState(Engine::StateId::SIMULATION);
+						engine.setState(Engine::StateId::SIMULATION);
 						break;
 
 					case '0':
@@ -44,7 +51,7 @@ void PlacementState::update(vector<SDL_Event> input) {
 							mapData[cursorPos.x][cursorPos.y].isFireExtinguisher =
 								!mapData[cursorPos.x][cursorPos.y].isFireExtinguisher;
 						}
-						
+
 						break;
 
 					case '1':
@@ -128,32 +135,40 @@ void PlacementState::update(vector<SDL_Event> input) {
 
 						break;
 					}
-
 				}
 
-				e.actionMutex.unlock();
+				engine.actionMutex.unlock();
 			}
 		}
 
-		if (!menuOpen) {
-			for (auto e : input) {
-				if (e.type == SDL_KEYDOWN) {
-					if (e.key.keysym.sym == SDLK_LEFT) {
+
+	}
+	else {
+		for (auto inEvent : input) {
+			if (inEvent.type == SDL_KEYDOWN) {
+				if (!menuOpen) {
+					if (inEvent.key.keysym.sym == SDLK_LEFT) {
 						cursorPos.x -= 1;
 					}
-					else if (e.key.keysym.sym == SDLK_h) {
-						menuOpen = !menuOpen;
-					}
-					else if (e.key.keysym.sym == SDLK_RIGHT) {
+					else if (inEvent.key.keysym.sym == SDLK_RIGHT) {
 						cursorPos.x += 1;
 					}
-					else if (e.key.keysym.sym == SDLK_UP) {
+					else if (inEvent.key.keysym.sym == SDLK_UP) {
 						cursorPos.y -= 1;
 					}
-					else if (e.key.keysym.sym == SDLK_DOWN) {
+					else if (inEvent.key.keysym.sym == SDLK_DOWN) {
 						cursorPos.y += 1;
 					}
-					else if (e.key.keysym.sym == SDLK_a) {
+					else if (inEvent.key.keysym.sym == SDLK_ESCAPE) {
+						engine.setState(Engine::StateId::MAIN_MENU);
+					}
+					else if (inEvent.key.keysym.sym == SDLK_RETURN) {
+						engine.setState(Engine::StateId::SIMULATION);
+					}
+					else if (inEvent.key.keysym.sym == SDLK_h) {
+						menuOpen = !menuOpen;
+					}
+					else if (inEvent.key.keysym.sym == SDLK_a) {
 						if (selected == -1) {
 							mapData[cursorPos.x][cursorPos.y].onFire =
 								!mapData[cursorPos.x][cursorPos.y].onFire;
@@ -163,72 +178,69 @@ void PlacementState::update(vector<SDL_Event> input) {
 								!mapData[cursorPos.x][cursorPos.y].isFireExtinguisher;
 						}
 					}
-					else if (e.key.keysym.sym == SDLK_b) {
+					else if (inEvent.key.keysym.sym == SDLK_b) {
+						selected = -1;
+					}
+				}
+				else {
+					if (inEvent.key.keysym.sym == SDLK_h) {
+						menuOpen = !menuOpen;
+					}
+					else if (inEvent.key.keysym.sym == SDLK_DOWN) {
+						if (hover < menu_items - 1) {
+							hover += 1;
+						}
+					}
+					else if (inEvent.key.keysym.sym == SDLK_UP) {
+						if (hover > 0) {
+							hover = hover - 1;
+						}
+					}
+					else if (inEvent.key.keysym.sym == SDLK_a) {
+						selected = hover;
+						menuOpen = !menuOpen;
+					}
+					else if (inEvent.key.keysym.sym == SDLK_b) {
 						selected = -1;
 					}
 				}
 			}
-
 		}
+
+		// Ensure the cursor doesn't leave the bounds of the map.
 		cursorPos.x = cursorPos.x < 0 ? 0 : cursorPos.x;
 		cursorPos.x = cursorPos.x > mapData.x - 1 ? mapData.x - 1 : cursorPos.x;
 		cursorPos.y = cursorPos.y < 0 ? 0 : cursorPos.y;
 		cursorPos.y = cursorPos.y > mapData.y - 1 ? mapData.y - 1 : cursorPos.y;
 
 		// #HARDCORE HARDCODE
-		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x < e.TILE_WIDTH) {
-			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH - e.TILE_WIDTH;
+		if (cursorPos.x * engine.TILE_WIDTH - engine.scrollOffset.x < engine.TILE_WIDTH) {
+			engine.scrollOffset.x = cursorPos.x * engine.TILE_WIDTH - engine.TILE_WIDTH;
 		}
-		if (cursorPos.x * e.TILE_WIDTH - e.scrollOffset.x > e.SCREEN_WIDTH - 2 * e.TILE_WIDTH) {
-			e.scrollOffset.x = cursorPos.x * e.TILE_WIDTH + 2 * e.TILE_WIDTH - e.SCREEN_WIDTH;
+		if (cursorPos.x * engine.TILE_WIDTH - engine.scrollOffset.x > engine.SCREEN_WIDTH - 2 * engine.TILE_WIDTH) {
+			engine.scrollOffset.x = cursorPos.x * engine.TILE_WIDTH + 2 * engine.TILE_WIDTH - engine.SCREEN_WIDTH;
 		}
-		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y < e.TILE_HEIGHT) {
-			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT - e.TILE_HEIGHT;
+		if (cursorPos.y * engine.TILE_HEIGHT - engine.scrollOffset.y < engine.TILE_HEIGHT) {
+			engine.scrollOffset.y = cursorPos.y * engine.TILE_HEIGHT - engine.TILE_HEIGHT;
 		}
-		if (cursorPos.y * e.TILE_HEIGHT - e.scrollOffset.y > e.SCREEN_HEIGHT - 2 * e.TILE_HEIGHT) {
-			e.scrollOffset.y = cursorPos.y * e.TILE_HEIGHT + 2 * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
+		if (cursorPos.y * engine.TILE_HEIGHT - engine.scrollOffset.y > engine.SCREEN_HEIGHT - 2 * engine.TILE_HEIGHT) {
+			engine.scrollOffset.y = cursorPos.y * engine.TILE_HEIGHT + 2 * engine.TILE_HEIGHT - engine.SCREEN_HEIGHT;
 		}
 
-			if (e.scrollOffset.x < 0) {
-				e.scrollOffset.x = 0;
-			}
-			if (e.scrollOffset.x > mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH) {
-				e.scrollOffset.x = mapData.x * e.TILE_WIDTH - e.SCREEN_WIDTH;
-			}
-			if (e.scrollOffset.y < 0) {
-				e.scrollOffset.y = 0;
-			}
-			if (e.scrollOffset.y > mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT) {
-				e.scrollOffset.y = mapData.y * e.TILE_HEIGHT - e.SCREEN_HEIGHT;
-			}
+		if (engine.scrollOffset.x < 0) {
+			engine.scrollOffset.x = 0;
 		}
-		else {
-			for (auto e : input) {
-				if (e.type == SDL_KEYDOWN) {
-					if (e.key.keysym.sym == SDLK_h) {
-						menuOpen = !menuOpen;
-					}
-					else if (e.key.keysym.sym == SDLK_DOWN) {
-						if (hover < menu_items - 1) {
-							hover += 1;
-						}
-					}
-					else if (e.key.keysym.sym == SDLK_UP) {
-						if (hover > 0) {
-							hover = hover - 1;
-						}
-					}
-					else if (e.key.keysym.sym == SDLK_a) {
-						selected = hover;
-						menuOpen = !menuOpen;
-					}
-					else if (e.key.keysym.sym == SDLK_b) {
-						selected = -1;
-					}
-				}
-			}
+		if (engine.scrollOffset.x > mapData.x * engine.TILE_WIDTH - engine.SCREEN_WIDTH) {
+			engine.scrollOffset.x = mapData.x * engine.TILE_WIDTH - engine.SCREEN_WIDTH;
+		}
+		if (engine.scrollOffset.y < 0) {
+			engine.scrollOffset.y = 0;
+		}
+		if (engine.scrollOffset.y > mapData.y * engine.TILE_HEIGHT - engine.SCREEN_HEIGHT) {
+			engine.scrollOffset.y = mapData.y * engine.TILE_HEIGHT - engine.SCREEN_HEIGHT;
 		}
 	}
+}
 
 
 void PlacementState::render(SDL_Renderer* renderer) {
@@ -258,7 +270,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 			}
 		}
 	}
-	
+
 	vector<Person>& people = e.getPeople();
 	SDL_Texture* fireTex = e.getTexture(Engine::AssetId::FIRE1);
 	SDL_Texture* personTex = e.getTexture(44);
@@ -336,7 +348,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		textures[3] = Engine::getInstance().getTexture(Engine::AssetId::FIRE3);
 		textures[4] = Engine::getInstance().getTexture(Engine::AssetId::FIRE4);
 
-		menu_back.x = x; 
+		menu_back.x = x;
 		menu_back.y = y;
 		menu_back.h = h;
 		menu_back.w = w;
@@ -344,22 +356,22 @@ void PlacementState::render(SDL_Renderer* renderer) {
 		//SDL_RenderFillRect(renderer, &menu_back);
 
 		// menu title
-		/*menu_top.x = x; 
-		menu_top.y = y; 
-		menu_top.h = h / 10; 
-		menu_top.w = w; 
+		/*menu_top.x = x;
+		menu_top.y = y;
+		menu_top.h = h / 10;
+		menu_top.w = w;
 		SDL_SetRenderDrawColor(renderer, 148, 1, 9, 0x0A);
 		SDL_RenderFillRect(renderer, &menu_top);*/
-		
-		 //menu items
-		menu_list[0].x = x; 
-		menu_list[0].y = y + (h/10) + 5;
-		menu_list[0].h = (h-(h/10))/3;
+
+		//menu items
+		menu_list[0].x = x;
+		menu_list[0].y = y + (h / 10) + 5;
+		menu_list[0].h = (h - (h / 10)) / 3;
 		menu_list[0].w = w;
 		SDL_SetRenderDrawColor(renderer, 160, 177, 187, 0x0A);
 		SDL_RenderFillRect(renderer, &menu_list[0]);
 		for (int num = 1; num < menu_items; num++) {
-			menu_list[num] = menu_list[num-1];
+			menu_list[num] = menu_list[num - 1];
 			menu_list[num].y = menu_list[num].y + menu_list[num].h + 5;
 			SDL_RenderFillRect(renderer, &menu_list[num]);
 			cout << menu_list[num].x << ", " << menu_list[num].y << ", " << menu_list[num].w << ", " << menu_list[num].h << endl;
@@ -401,7 +413,7 @@ void PlacementState::render(SDL_Renderer* renderer) {
 			SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x0A);
 			SDL_RenderDrawRect(renderer, &menu_list[selected]);
 		}
-		
+
 
 
 	}

@@ -8,16 +8,15 @@
 #include <queue>
 #include <set>
 #include <thread>
-
-#include "engine.h"
-#include "main_menu_state.h"
-#include "placement_state.h"
-#include "simulation_state.h"
 #include <windows.h>
 #include <exception>
 #include <iostream>
 #include <SDL_mixer.h>
 
+#include "engine.h"
+#include "main_menu_state.h"
+#include "placement_state.h"
+#include "simulation_state.h"
 
 using namespace std;
 
@@ -163,7 +162,9 @@ void portUpdate() {
 }
 
 bool Engine::init() {
-	commThread = thread(portUpdate);
+	if (USING_ARCADE) {
+		commThread = thread(portUpdate);
+	}
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -171,7 +172,7 @@ bool Engine::init() {
 	if (window == NULL) {
 		return false;
 	}
-	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (renderer == NULL) {
 		return false;
@@ -229,9 +230,9 @@ void Engine::run() {
 	double accumulator = 0.0;
 
 	bool quit = false;
-	SDL_Event e;
-	vector<SDL_Event> events;
-	while (!quit) {
+	
+	running = true;
+	while (running) {
 		start = steady_clock::now();
 
 		steady_clock::duration chronoFrameTime = start - prevStart;
@@ -245,27 +246,14 @@ void Engine::run() {
 
 		while (accumulator >= dt) {
 			// Update goes here
+			SDL_Event e;
+			vector<SDL_Event> events;
 			while (SDL_PollEvent(&e) != 0) {
 				events.push_back(e);
-				if (e.type == SDL_QUIT) {
-					quit = true;
-				}
-				if (e.type == SDL_KEYDOWN) {
-					if (e.key.keysym.sym == SDLK_m) {
-						setState(StateId::MAIN_MENU);
-					}
-					else if (e.key.keysym.sym == SDLK_p) {
-						setState(StateId::PLACEMENT);
-					}
-					else if (e.key.keysym.sym == SDLK_s) {
-						setState(StateId::SIMULATION);
-					}
-				}
 			}
 			states[activeState]->update(events);
 			events.clear();
 			// Also probably need to get input from Joystick and buttons here
-
 
 			t += dt;
 			accumulator -= dt;
@@ -281,6 +269,11 @@ void Engine::run() {
 		states[activeState]->render(renderer);
 		SDL_RenderPresent(renderer);
 	}
+}
+
+void Engine::quit()
+{
+	running = false;
 }
 
 void Engine::dump() {

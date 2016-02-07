@@ -21,6 +21,7 @@ class Engine {
 public:
 	const int TILE_WIDTH = 32;
 	const int TILE_HEIGHT = 32;
+	const bool USING_ARCADE = false;
 
 	int itemLocation;
 
@@ -28,6 +29,7 @@ public:
 
 	bool init();
 	void run();
+	void quit();
 	void loadLevel(std::string mapFile);
 
 	enum class StateId
@@ -111,6 +113,8 @@ public:
 	vector<Person> people;
 	queue<char> actions;
 	thread commThread;
+
+	bool running = false;
 
 	Engine();
 	~Engine();

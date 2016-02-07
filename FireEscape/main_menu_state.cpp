@@ -4,8 +4,21 @@
 void MainMenuState::update(vector<SDL_Event> input) {
 	Engine& e = Engine::getInstance();
 
+	for (auto in : input) {
+		if (in.type == SDL_KEYDOWN) {
+			if (in.key.keysym.sym == SDLK_RETURN) {
+				e.setState(Engine::StateId::PLACEMENT);
+			}
+			else if (in.key.keysym.sym == SDLK_ESCAPE) {
+				e.quit();
+			}
+		}
+	}
+
+	// This loop is only for the arcade controls.
 	if (!e.getActions().empty()) {
-		if (e.actionMutex.try_lock()) {   // only increase if currently not locked.
+		
+		if (e.actionMutex.try_lock()) {   
 			queue<char>& actions = e.getActions();
 
 			for (int i = 0; i < actions.size(); i++) {

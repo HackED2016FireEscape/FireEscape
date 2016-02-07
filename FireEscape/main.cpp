@@ -12,7 +12,6 @@
 #include "engine.h"
 #include "two_d_array.h"
 
-
 using namespace std;
 
 CommPort* port;
@@ -25,9 +24,8 @@ int main(int argc, char* argv[]) {
 	Engine& e = Engine::getInstance();
 
 	if (e.init()) {
-		e.run();
+		e.run();		
 	}
 
-
-	return 0;
+	return EXIT_SUCCESS;
 }
